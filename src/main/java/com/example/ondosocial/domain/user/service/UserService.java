@@ -4,6 +4,7 @@ package com.example.ondosocial.domain.user.service;
 import com.example.ondosocial.domain.user.dto.request.UserUpdateRequestDto;
 import com.example.ondosocial.domain.user.dto.response.UserProfileDto;
 import com.example.ondosocial.domain.user.dto.response.UserProfileResponseDto;
+import com.example.ondosocial.domain.user.dto.response.UserUpdateDto;
 import com.example.ondosocial.domain.user.dto.response.UserUpdateResponseDto;
 import com.example.ondosocial.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,13 +45,19 @@ public class UserService {
             throw new RuntimeException("비밀번호가 일치하지 않습니다");
         }
 
-
         user.update(userUpdateRequestDto.getName(),userUpdateRequestDto.getEmail());
 
+        UserUpdateDto userUpdateDto=new UserUpdateDto(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getCreatedAt(),
+                user.getUpdatedAt()
+        );
         return new UserUpdateResponseDto(
                 " 성공",
                 205,
-                user.getId()
+                userUpdateDto
         );
 
     }

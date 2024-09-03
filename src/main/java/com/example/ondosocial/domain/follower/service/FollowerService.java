@@ -52,12 +52,4 @@ public class FollowerService {
         Follower follower = followerRepository.findOneByUserAndFollower(user, followerUser);
         followerRepository.delete(follower);
     }
-
-    public void test() {
-        userRepository.save(new User("test1@mail.com", "password1", "name1"));
-        userRepository.save(new User("test2@mail.com", "password2", "name2"));
-        userRepository.save(new User("test3@mail.com", "password3", "name3"));
-        userRepository.save(new User("test4@mail.com", "password4", "name4"));
-        userRepository.save(new User("test5@mail.com", "password5", "name5"));
-    }
 }

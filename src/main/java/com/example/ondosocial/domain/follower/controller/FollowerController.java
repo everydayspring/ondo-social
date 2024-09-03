@@ -21,19 +21,6 @@ public class FollowerController {
 
     private final FollowerService followerService;
 
-    @GetMapping("/testdata")
-    public ResponseEntity<Objects> test() {
-        followerService.test();
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-//    @GetMapping
-//    public ResponseEntity getFollower(@PathVariable int id) {
-//        return new ResponseEntity(HttpStatus.CREATED);
-////        return new ResponseEntity<>(new User("email.com", "pass", "name", true) , HttpStatusCode.valueOf(200));
-//    }
-
-
     @PostMapping
     public ResponseEntity<Objects> create(@PathVariable Long id, @RequestBody @Valid FollowerCreateDto.Request request) {
         followerService.create(id, request.getFollowerId());

@@ -1,4 +1,4 @@
-package com.example.ondosocial.domain.user.dto.response;
+package com.example.ondosocial.domain.profile.dto.response;
 
 
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-public class UserUpdateDto {
+public class UserUpdateResponseDto {
     private Long id;
     private String name;
     private String email;

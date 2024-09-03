@@ -1,4 +1,4 @@
-package com.example.ondosocial.domain.user.dto.request;
+package com.example.ondosocial.domain.profile.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

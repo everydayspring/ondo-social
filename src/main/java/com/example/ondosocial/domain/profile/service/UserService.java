@@ -1,15 +1,15 @@
-package com.example.ondosocial.domain.user.service;
+package com.example.ondosocial.domain.profile.service;
 
 
-import com.example.ondosocial.domain.user.dto.request.UserUpdateRequestDto;
-import com.example.ondosocial.domain.user.dto.response.UserProfileDto;
-import com.example.ondosocial.domain.user.dto.response.UserProfileResponseDto;
-import com.example.ondosocial.domain.user.dto.response.UserUpdateDto;
-import com.example.ondosocial.domain.user.dto.response.UserUpdateResponseDto;
-import com.example.ondosocial.domain.user.repository.UserRepository;
+import com.example.ondosocial.domain.profile.dto.request.UserUpdateRequestDto;
+import com.example.ondosocial.domain.profile.dto.response.UserProfileResponseDto;
+import com.example.ondosocial.domain.profile.dto.response.UserUpdateResponseDto;
+import com.example.ondosocial.domain.profile.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import com.example.ondosocial.domain.user.entity.User;
+import com.example.ondosocial.domain.profile.entity.User;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -19,24 +19,21 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserProfileResponseDto getUser(Long id) {
+    public ResponseEntity<UserProfileResponseDto> getUser(Long id) {
         User foundUser=userRepository.findById(id)
                 .orElseThrow(()-> new NullPointerException("해당 회원이 없습니다"));
 
-        UserProfileDto userProfileDto=new UserProfileDto(
+        UserProfileResponseDto userProfileDto=new UserProfileResponseDto(
                 foundUser.getId(),
                 foundUser.getName(),
                 foundUser.getEmail()
         );
-        return new UserProfileResponseDto(
-                "성공",
-                200,
-                userProfileDto
-        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(userProfileDto);
     }
 
     @Transactional
-    public UserUpdateResponseDto updateUser(Long id, UserUpdateRequestDto userUpdateRequestDto) {
+    public ResponseEntity<UserUpdateResponseDto> updateUser(Long id, UserUpdateRequestDto userUpdateRequestDto) {
         User user=userRepository.findById(id)
                 .orElseThrow(()-> new NullPointerException("해당 회원이 없습니다"));
 
@@ -47,18 +44,14 @@ public class UserService {
 
         user.update(userUpdateRequestDto.getName(),userUpdateRequestDto.getEmail());
 
-        UserUpdateDto userUpdateDto=new UserUpdateDto(
+        UserUpdateResponseDto userUpdateDto=new UserUpdateResponseDto(
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
                 user.getCreatedAt(),
                 user.getUpdatedAt()
         );
-        return new UserUpdateResponseDto(
-                " 성공",
-                205,
-                userUpdateDto
-        );
 
+        return ResponseEntity.status(HttpStatus.OK).body(userUpdateDto);
     }
 }

@@ -1,4 +1,4 @@
-package ondo.ondo.config;
+package com.example.ondosocial.config.entity;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;

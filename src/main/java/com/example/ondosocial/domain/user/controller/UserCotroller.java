@@ -1,10 +1,10 @@
-package ondo.ondo.controller;
+package com.example.ondosocial.domain.user.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import ondo.ondo.dto.LoginRequestDto;
-import ondo.ondo.dto.SignupRequestDto;
-import ondo.ondo.service.UserService;
+import com.example.ondosocial.domain.user.dto.LoginRequestDto;
+import com.example.ondosocial.domain.user.dto.SignupRequestDto;
+import com.example.ondosocial.domain.user.service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;

@@ -1,10 +1,10 @@
-package ondo.ondo.dto;
+package com.example.ondosocial.domain.user.dto;
 
 import lombok.Getter;
 
 @Getter
-public class SignupRequestDto {
+public class LoginRequestDto {
+
     private String email;
     private String password;
-    private String username;
 }

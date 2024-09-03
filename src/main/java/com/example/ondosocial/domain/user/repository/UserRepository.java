@@ -1,4 +1,4 @@
-package ondo.ondo.repository;
+package com.example.ondosocial.domain.user.repository;
 
 import ondo.ondo.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,12 +1,12 @@
-package ondo.ondo.service;
+package com.example.ondosocial.domain.user.service;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import ondo.ondo.config.PasswordEncoder;
-import ondo.ondo.dto.LoginRequestDto;
-import ondo.ondo.dto.SignupRequestDto;
+import com.example.ondosocial.config.entity.PasswordEncoder;
+import com.example.ondosocial.domain.user.dto.LoginRequestDto;
+import com.example.ondosocial.domain.user.dto.SignupRequestDto;
 import ondo.ondo.entity.User;
-import ondo.ondo.repository.UserRepository;
+import com.example.ondosocial.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,6 +1,4 @@
-# 🌡️ On-do
-
-## 💡 프로젝트 소개
+# 💡 On-do
 
 Ondo 프로젝트는 온도와 켜지다(ON)라는 중의적인 의미를 내포한 소셜 네트워크 서비스입니다.
 
@@ -8,7 +6,7 @@ Ondo 프로젝트는 온도와 켜지다(ON)라는 중의적인 의미를 내포
 
 On기능을 사용해 친구를 팔로우 할 수 있습니다.
 
-## 🚀STACK
+# 🚀 STACK
 
 Environment
 
@@ -30,15 +28,15 @@ Communication
 ![슬랙](  https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)
 ![노션](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white)
 
-## 🏗️ 프로젝트 설계
+# 🏗️프로젝트 설계
 
-#### [Wireframe](https://app.diagrams.net/#G1RcLdWvKKMh_7lyUwlDD0fZw9KPu_snqT#{%22pageId%22:%2203018318-947c-dd8e-b7a3-06fadd420f32%22})
+### [Wireframe](https://app.diagrams.net/#G1RcLdWvKKMh_7lyUwlDD0fZw9KPu_snqT#{%22pageId%22:%2203018318-947c-dd8e-b7a3-06fadd420f32%22})
 
-#### [API Document](https://documenter.getpostman.com/view/37564576/2sAXjNWqFm)
+### [API Document](https://documenter.getpostman.com/view/37564576/2sAXjNWqFm)
 
-#### [ERD diagram](https://www.erdcloud.com/d/HENWahcE3QRN2q6Yk)
+### [ERD diagram](https://www.erdcloud.com/d/HENWahcE3QRN2q6Yk)
 
-## ⚒️프로젝트 기능 정리
+# ⚒️ 프로젝트 기능 정리
 
 회원가입
 

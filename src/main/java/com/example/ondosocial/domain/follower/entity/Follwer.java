@@ -14,11 +14,11 @@ import lombok.NoArgsConstructor;
 public class Follwer extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "follower_id")
+    @JoinColumn(name = "follower_id", nullable = false)
     private User follower;
 
     public Follwer(User user, User follower) {

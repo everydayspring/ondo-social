@@ -21,12 +21,22 @@ public class FollowerController {
 
     private final FollowerService followerService;
 
+    /**
+     * 친구 등록
+     * @param id
+     * @param request
+     */
     @PostMapping
     public ResponseEntity<Objects> create(@PathVariable Long id, @RequestBody @Valid FollowerCreateDto.Request request) {
         followerService.create(id, request.getFollowerId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    /**
+     * 친구 조회
+     * @param id
+     * @return List<GetFollowersDto.Response>
+     */
     @GetMapping
     public ResponseEntity<List<GetFollowersDto.Response>> getFollowers(@PathVariable Long id) {
         List<Follower> followers = followerService.getFollowers(id);
@@ -39,6 +49,11 @@ public class FollowerController {
         return ResponseEntity.status(HttpStatus.OK).body(followerUsers);
     }
 
+    /**
+     * 친구 삭제
+     * @param id
+     * @param followerId
+     */
     @DeleteMapping("/{followerId}")
     public ResponseEntity<Objects> delete(@PathVariable Long id, @PathVariable Long followerId) {
         followerService.delete(id, followerId);

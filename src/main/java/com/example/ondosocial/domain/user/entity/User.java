@@ -21,7 +21,7 @@ public class User extends BaseEntity {
     private String name;
 
     @Column(nullable = false)
-    @ColumnDefault("true")
+    @ColumnDefault("false")
     private boolean deleted;
 
     public User(String email, String password, String name, boolean deleted) {
@@ -29,5 +29,10 @@ public class User extends BaseEntity {
         this.password = password;
         this.name = name;
         this.deleted = deleted;
+    }
+
+    public void update(String name, String email) {
+        this.name=name;
+        this.email=email;
     }
 }

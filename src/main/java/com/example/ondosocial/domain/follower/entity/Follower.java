@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Follwer extends BaseEntity {
+public class Follower extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -21,7 +21,7 @@ public class Follwer extends BaseEntity {
     @JoinColumn(name = "follower_id", nullable = false)
     private User follower;
 
-    public Follwer(User user, User follower) {
+    public Follower(User user, User follower) {
         this.user = user;
         this.follower = follower;
     }

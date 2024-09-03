@@ -1,0 +1,29 @@
+package com.example.ondosocial.domain.post.entity;
+
+import com.example.ondosocial.config.entity.BaseEntity;
+import com.example.ondosocial.domain.user.entity.User;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@Entity
+@NoArgsConstructor
+public class Post extends BaseEntity {
+    private String title;
+    private String content;
+    private String celsius;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public Post(String title, String content, String celsius, User user) {
+        this.title = title;
+        this.content = content;
+        this.celsius = celsius;
+        this.user = user;
+    }
+}

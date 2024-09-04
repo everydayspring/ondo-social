@@ -19,7 +19,7 @@ import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("followers")
+@RequestMapping("/followers")
 public class FollowerController {
 
     private final FollowerService followerService;

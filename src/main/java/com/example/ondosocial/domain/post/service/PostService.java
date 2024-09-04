@@ -1,93 +1,74 @@
 package com.example.ondosocial.domain.post.service;
 
-import com.example.ondosocial.domain.post.dto.PostRequestDto;
-import com.example.ondosocial.domain.post.dto.PostResponseDto;
-import com.example.ondosocial.domain.post.dto.PostSimpleResponseDto;
+import com.example.ondosocial.domain.follower.entity.Follower;
+import com.example.ondosocial.domain.follower.repository.FollowerRepository;
+import com.example.ondosocial.domain.post.dto.GetPostDto;
+import com.example.ondosocial.domain.post.dto.GetPostsDto;
 import com.example.ondosocial.domain.post.entity.Post;
 import com.example.ondosocial.domain.post.repository.PostRepository;
 import com.example.ondosocial.domain.user.entity.User;
-import com.example.ondosocial.exception.AuthException;
-import jakarta.transaction.Transactional;
+import com.example.ondosocial.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
+    private final FollowerRepository followerRepository;
 
-    //게시글 작성
-    @Transactional
-    public PostResponseDto createPost(PostRequestDto postRequestDto) {
-        Post post = new Post(
-                postRequestDto.getTitle(),
-                postRequestDto.getContents(),
-                postRequestDto.getCelsius(),
-                postRequestDto.getUser()
-        );
-
-        Post createPost = postRepository.save(post);
-
-        return new PostResponseDto(
-                createPost.getTitle(),
-                createPost.getContents(),
-                createPost.getCelsius(),
-                createPost.getCreatedAt(),
-                createPost.getUpdatedAt()
-        );
-    }
-
-    //게시물 아이디 단건 조회
-    public Optional<Post> getPostById(Long id) {
-        return postRepository.findById(id);
-    }
-
-    //게시물 전체조회
-    public List<PostSimpleResponseDto> getPosts(String date) {
-        LocalDateTime postDateTime = LocalDate.parse(date).atStartOfDay();
-        LocalDateTime lastModifiedTime = LocalDate.parse(date).atTime(LocalTime.MAX);
-
-        List<Post> postList = postRepository.findAllByCreatedAtBetweenOrderByUpdatedAtDesc(postDateTime,lastModifiedTime);
-
-        List<PostSimpleResponseDto> postsList = new ArrayList<>();
-        for (Post post : postList) {
-            PostSimpleResponseDto dto = new PostSimpleResponseDto(
-                    post.getTitle(),
-                    post.getContents(),
-                    post.getCelsius(),
-                    post.getCreatedAt(),
-                    post.getUpdatedAt()
-
-            );
-            postsList.add(dto);
-
+    public void create(Long id, String title, String content, int celsius) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        if (user.isDeleted()) {
+            throw new IllegalArgumentException("User is deleted");
         }
-        return postsList;
+        Post post = new Post(title, content, celsius, user);
+        postRepository.save(post);
     }
 
+    @Transactional(readOnly = true)
+    public Page<GetPostsDto.Response> getPosts(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-    // 수정 권한 없는 경우
-    public void updatePost() throws AuthException {
-        if (false) {
-            throw new AuthException();
+        Page<Post> posts = postRepository.findAll(pageable);
+        return posts.map(GetPostsDto.Response::new);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<GetPostsDto.Response> getPostsByFollowedUser(Long id, int page, int size) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        if (user.isDeleted()) {
+            throw new IllegalArgumentException("User is deleted");
         }
-    }
-    //삭제 권한 없는 경우
-    public void deletePost() throws AuthException {
-        if (false) {
-            throw new AuthException();
+
+        List<Follower> followers = followerRepository.findAllByUserId(id);
+        List<Long> followerIds = new ArrayList<>();
+
+        for (Follower follower : followers) {
+            followerIds.add(follower.getFollower().getId());
         }
+        followerIds.add(id);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        Page<Post> posts = postRepository.findAllByUserIdIn(followerIds, pageable);
+        return posts.map(GetPostsDto.Response::new);
     }
 
-
+    @Transactional(readOnly = true)
+    public Post getPostById(Long id) {
+        return postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+    }
 }

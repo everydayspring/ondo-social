@@ -1,6 +1,7 @@
 package com.example.ondosocial.domain.user.entity;
 
 import com.example.ondosocial.config.entity.BaseEntity;
+import com.example.ondosocial.domain.profile.dto.request.UserUpdateRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.Getter;
@@ -31,7 +32,14 @@ public class User extends BaseEntity {
         this.deleted = deleted;
     }
 
-
+    public void update(UserUpdateRequestDto userUpdateRequestDto) {
+       if(userUpdateRequestDto.getName()!=null) {
+           this.name=userUpdateRequestDto.getName();
+       }
+        if(userUpdateRequestDto.getEmail()!=null){
+            this.email= userUpdateRequestDto.getEmail();
+        }
+    }
     public void update(String name, String email) {
         this.name=name;
         this.email=email;

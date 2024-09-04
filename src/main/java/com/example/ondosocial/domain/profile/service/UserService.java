@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.example.ondosocial.domain.user.entity.User;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -41,19 +43,20 @@ public class UserService {
         if(!userUpdateRequestDto.getCurrentPassword().equals(user.getPassword())){
             throw new RuntimeException("비밀번호가 일치하지 않습니다");
         }
-        if(userUpdateRequestDto.getNewPassword().equals(user.getPassword())){
-            throw new RuntimeException("동일한 비밀번호로 변경할 수 없습니다");
+        if(userUpdateRequestDto.getNewPassword()!=null){
+            if(userUpdateRequestDto.getNewPassword().equals(user.getPassword())){
+                throw new RuntimeException("동일한 비밀번호로 변경할 수 없습니다");
+            }
         }
-        user.update(userUpdateRequestDto.getName(),userUpdateRequestDto.getEmail());
 
-        System.out.println("user.getUpdateedAt"+user.getUpdatedAt());
+        user.update(userUpdateRequestDto);
 
         UserUpdateResponseDto userUpdateDto=new UserUpdateResponseDto(
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
                 user.getCreatedAt(),
-                user.getUpdatedAt()
+                LocalDateTime.now()
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(userUpdateDto);

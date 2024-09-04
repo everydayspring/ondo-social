@@ -2,7 +2,9 @@ package com.example.ondosocial.domain.post.entity;
 
 import com.example.ondosocial.config.entity.BaseEntity;
 import com.example.ondosocial.domain.user.entity.User;
+
 import jakarta.persistence.*;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

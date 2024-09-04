@@ -3,7 +3,9 @@ package com.example.ondosocial.domain.follower.entity;
 import com.example.ondosocial.config.entity.BaseEntity;
 import com.example.ondosocial.domain.user.entity.User;
 import jakarta.persistence.Entity;
+
 import jakarta.persistence.FetchType;
+
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;

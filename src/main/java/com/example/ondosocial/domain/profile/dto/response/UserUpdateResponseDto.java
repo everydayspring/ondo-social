@@ -1,6 +1,8 @@
 package com.example.ondosocial.domain.profile.dto.response;
 
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

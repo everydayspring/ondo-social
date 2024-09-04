@@ -1,4 +1,4 @@
-package com.example.ondosocial.domain.profile.entity;
+package com.example.ondosocial.domain.user.entity;
 
 import com.example.ondosocial.config.entity.BaseEntity;
 import jakarta.persistence.Column;

@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import com.example.ondosocial.domain.profile.entity.User;
+import com.example.ondosocial.domain.user.entity.User;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -38,11 +38,15 @@ public class UserService {
                 .orElseThrow(()-> new NullPointerException("해당 회원이 없습니다"));
 
         //비밀번호 일치 확인
-        if(!userUpdateRequestDto.getPassword().equals(user.getPassword())){
+        if(!userUpdateRequestDto.getCurrentPassword().equals(user.getPassword())){
             throw new RuntimeException("비밀번호가 일치하지 않습니다");
         }
-
+        if(userUpdateRequestDto.getNewPassword().equals(user.getPassword())){
+            throw new RuntimeException("동일한 비밀번호로 변경할 수 없습니다");
+        }
         user.update(userUpdateRequestDto.getName(),userUpdateRequestDto.getEmail());
+
+        System.out.println("user.getUpdateedAt"+user.getUpdatedAt());
 
         UserUpdateResponseDto userUpdateDto=new UserUpdateResponseDto(
                 user.getId(),

@@ -3,7 +3,7 @@ package com.example.ondosocial.domain.follower.service;
 import com.example.ondosocial.domain.follower.entity.Follower;
 import com.example.ondosocial.domain.follower.repository.FollowerRepository;
 import com.example.ondosocial.domain.user.entity.User;
-import com.example.ondosocial.domain.user.entity.UserRepository;
+import com.example.ondosocial.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -3,8 +3,7 @@ package com.example.ondosocial.domain.user.dto;
 import lombok.Getter;
 
 @Getter
-public class SignupRequestDto {
-    private String email;
+public class DeleteRequestDto {
+
     private String password;
-    private String name;
 }

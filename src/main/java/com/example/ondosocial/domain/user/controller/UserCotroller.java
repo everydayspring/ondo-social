@@ -1,13 +1,15 @@
 package com.example.ondosocial.domain.user.controller;
 
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import com.example.ondosocial.domain.user.dto.DeleteRequestDto;
 import com.example.ondosocial.domain.user.dto.LoginRequestDto;
 import com.example.ondosocial.domain.user.dto.SignupRequestDto;
+import com.example.ondosocial.domain.user.dto.SignupResponseDto;
 import com.example.ondosocial.domain.user.service.UserService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+import org.apache.catalina.connector.Response;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,15 +19,21 @@ public class UserCotroller {
 
     //회원가입
     @PostMapping("/signup")
-    public String signup(@RequestBody SignupRequestDto signupRequestDto) {
+    public ResponseEntity<SignupResponseDto> signup(@RequestBody SignupRequestDto signupRequestDto) {
         userService.signup(signupRequestDto);
-        return "redirect:/login";
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/singin")
-    public String login(LoginRequestDto loginRequestDto, HttpServletResponse response){
-        userService.login(loginRequestDto, response);
-        return "redirect:/???"; // 수정 필요! 로그인 하면 무슨 화면이 떠야하는가!
+    @PostMapping("/signin")
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto){
+       userService.login(loginRequestDto);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id, @RequestBody DeleteRequestDto deleteRequestDto){
+        userService.delete(id, deleteRequestDto.getPassword());
+       return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

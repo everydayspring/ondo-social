@@ -31,7 +31,9 @@ public class ProfileService {
         ProfileResponseDto userProfileDto=new ProfileResponseDto(
                 foundUser.getId(),
                 foundUser.getName(),
-                foundUser.getEmail()
+                foundUser.getEmail(),
+                foundUser.getFollowers().size(),
+                foundUser.getPosts().size()
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(userProfileDto);

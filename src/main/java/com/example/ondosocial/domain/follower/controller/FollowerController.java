@@ -9,13 +9,11 @@ import com.example.ondosocial.domain.follower.service.FollowerService;
 import com.example.ondosocial.domain.user.dto.AuthUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +24,7 @@ public class FollowerController {
 
     /**
      * 친구 등록
+     *
      * @Headers Authorization
      * @body FollowerCreateDto.Request
      */
@@ -39,8 +38,9 @@ public class FollowerController {
 
     /**
      * 친구 조회
-     * @Headers Authorization
+     *
      * @return List<GetFollowersDto.Response>
+     * @Headers Authorization
      */
     @GetMapping
     public ResponseEntity<List<GetFollowersDto.Response>> getFollowers(@Auth AuthUser user) {
@@ -57,11 +57,12 @@ public class FollowerController {
 
     /**
      * 친구 삭제
+     *
      * @Headers Authorization
      * @body FollowerDeleteDto.Request
      */
     @DeleteMapping
-    public ResponseEntity<Void> delete(@Auth AuthUser user,@RequestBody @Valid FollowerDeleteDto.Request request) {
+    public ResponseEntity<Void> delete(@Auth AuthUser user, @RequestBody @Valid FollowerDeleteDto.Request request) {
         followerService.delete(user.getId(), request.getFollowerId());
         return ResponseEntity
                 .noContent()

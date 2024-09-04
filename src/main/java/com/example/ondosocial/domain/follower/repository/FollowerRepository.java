@@ -2,7 +2,6 @@ package com.example.ondosocial.domain.follower.repository;
 
 import com.example.ondosocial.domain.follower.entity.Follower;
 import com.example.ondosocial.domain.user.entity.User;
-import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

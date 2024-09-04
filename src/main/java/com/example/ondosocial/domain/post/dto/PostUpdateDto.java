@@ -20,6 +20,7 @@ public class PostUpdateDto {
         private String title;
         @NotBlank
         private String content;
+        @NotNull
         @Max(100)
         @Min(1)
         private int celsius;

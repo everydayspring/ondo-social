@@ -2,16 +2,12 @@ package com.example.ondosocial.domain.post.service;
 
 import com.example.ondosocial.domain.follower.entity.Follower;
 import com.example.ondosocial.domain.follower.repository.FollowerRepository;
-import com.example.ondosocial.domain.post.dto.GetPostDto;
 import com.example.ondosocial.domain.post.dto.GetPostsDto;
-import com.example.ondosocial.domain.post.dto.PostUpdateDto;
 import com.example.ondosocial.domain.post.entity.Post;
 import com.example.ondosocial.domain.post.repository.PostRepository;
 import com.example.ondosocial.domain.user.entity.User;
 import com.example.ondosocial.domain.user.repository.UserRepository;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

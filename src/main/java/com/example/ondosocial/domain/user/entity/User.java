@@ -29,4 +29,9 @@ public class User extends BaseEntity {
         this.password = password;
         this.name = name;
     }
+
+    public void delete() {
+        this.deleted = true;
+
+    }
 }

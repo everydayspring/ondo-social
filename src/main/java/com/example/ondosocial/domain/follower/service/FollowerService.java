@@ -19,13 +19,20 @@ public class FollowerService {
     private final FollowerRepository followerRepository;
     private final UserRepository userRepository;
 
-
     public void create(Long id, Long followerId) {
         if(Objects.equals(id, followerId)) {
             throw new IllegalArgumentException("Users cannot follow themselves");
         }
+
         User user = userRepository.findById(id).orElseThrow(()-> new RuntimeException("User not found"));
+        if(user.isDeleted()) {
+            throw new IllegalArgumentException("User is deleted");
+        }
+
         User follower = userRepository.findById(followerId).orElseThrow(()-> new RuntimeException("User not found"));
+        if(follower.isDeleted()) {
+            throw new IllegalArgumentException("User is deleted");
+        }
 
         if(followerRepository.findOneByUserAndFollower(user, follower) != null) {
             throw new RuntimeException("Follower already exists");
@@ -40,7 +47,6 @@ public class FollowerService {
 
         return followerRepository.findAllByUser(user);
     }
-
 
     public void delete(Long id, Long followerId) {
         User user = userRepository.findById(id).orElseThrow(()-> new RuntimeException("User not found"));

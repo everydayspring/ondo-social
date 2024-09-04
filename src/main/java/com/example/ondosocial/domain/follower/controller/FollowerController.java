@@ -1,9 +1,12 @@
 package com.example.ondosocial.domain.follower.controller;
 
+import com.example.ondosocial.annotation.Auth;
 import com.example.ondosocial.domain.follower.dto.FollowerCreateDto;
+import com.example.ondosocial.domain.follower.dto.FollowerDeleteDto;
 import com.example.ondosocial.domain.follower.dto.GetFollowersDto;
 import com.example.ondosocial.domain.follower.entity.Follower;
 import com.example.ondosocial.domain.follower.service.FollowerService;
+import com.example.ondosocial.domain.user.dto.AuthUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,49 +19,52 @@ import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users/{id}/followers")
+@RequestMapping("followers")
 public class FollowerController {
 
     private final FollowerService followerService;
 
     /**
      * 친구 등록
-     * @param id
-     * @param request
+     * @Headers Authorization
+     * @body FollowerCreateDto.Request
      */
     @PostMapping
-    public ResponseEntity<Objects> create(@PathVariable Long id, @RequestBody @Valid FollowerCreateDto.Request request) {
-        followerService.create(id, request.getFollowerId());
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<Void> create(@Auth AuthUser user, @RequestBody @Valid FollowerCreateDto.Request request) {
+        followerService.create(user.getId(), request.getFollowerId());
+        return ResponseEntity
+                .ok()
+                .build();
     }
 
     /**
      * 친구 조회
-     * @param id
+     * @Headers Authorization
      * @return List<GetFollowersDto.Response>
      */
     @GetMapping
-    public ResponseEntity<List<GetFollowersDto.Response>> getFollowers(@PathVariable Long id) {
-        List<Follower> followers = followerService.getFollowers(id);
+    public ResponseEntity<List<GetFollowersDto.Response>> getFollowers(@Auth AuthUser user) {
+        List<Follower> followers = followerService.getFollowers(user.getId());
         List<GetFollowersDto.Response> followerUsers = new ArrayList<>();
 
         for (Follower follower : followers) {
             followerUsers.add(new GetFollowersDto.Response(follower.getFollower()));
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(followerUsers);
+        return ResponseEntity
+                .ok(followerUsers);
     }
 
     /**
      * 친구 삭제
-     * @param id
-     * @param followerId
+     * @Headers Authorization
+     * @body FollowerDeleteDto.Request
      */
-    @DeleteMapping("/{followerId}")
-    public ResponseEntity<Objects> delete(@PathVariable Long id, @PathVariable Long followerId) {
-        followerService.delete(id, followerId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@Auth AuthUser user,@RequestBody @Valid FollowerDeleteDto.Request request) {
+        followerService.delete(user.getId(), request.getFollowerId());
+        return ResponseEntity
+                .ok()
+                .build();
     }
-
-
 }

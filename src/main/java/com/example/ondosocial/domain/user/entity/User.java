@@ -1,6 +1,7 @@
 package com.example.ondosocial.domain.user.entity;
 
 import com.example.ondosocial.config.entity.BaseEntity;
+import com.example.ondosocial.config.password.PasswordEncoder;
 import com.example.ondosocial.domain.profile.dto.request.ProfileUpdateRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,7 +37,8 @@ public class User extends BaseEntity {
 
     }
 
-    public void update(ProfileUpdateRequestDto userUpdateRequestDto) {
+
+    public void update(ProfileUpdateRequestDto userUpdateRequestDto, PasswordEncoder passwordEncoder) {
        if(userUpdateRequestDto.getName()!=null) {
            this.name=userUpdateRequestDto.getName();
        }
@@ -44,7 +46,8 @@ public class User extends BaseEntity {
             this.email= userUpdateRequestDto.getEmail();
         }
         if(userUpdateRequestDto.getNewPassword()!=null){
-            this.password=userUpdateRequestDto.getNewPassword();
+            //새로운 비밀번호 암호화 후 저장
+            this.password=passwordEncoder.encode(userUpdateRequestDto.getNewPassword());
         }
     }
 

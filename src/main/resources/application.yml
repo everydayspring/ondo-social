@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: spring-practice
+  datasource:
+    url: jdbc:mysql://localhost:3306/ondo
+    username: root
+    password: yooon7200*
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true

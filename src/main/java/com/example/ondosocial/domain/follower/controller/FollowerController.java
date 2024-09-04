@@ -64,7 +64,7 @@ public class FollowerController {
     public ResponseEntity<Void> delete(@Auth AuthUser user,@RequestBody @Valid FollowerDeleteDto.Request request) {
         followerService.delete(user.getId(), request.getFollowerId());
         return ResponseEntity
-                .ok()
+                .noContent()
                 .build();
     }
 }

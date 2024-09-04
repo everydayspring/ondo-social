@@ -1,12 +1,11 @@
 package com.example.ondosocial.domain.user.controller;
 
-import com.example.ondosocial.domain.user.dto.DeleteRequestDto;
-import com.example.ondosocial.domain.user.dto.LoginRequestDto;
-import com.example.ondosocial.domain.user.dto.SignupRequestDto;
-import com.example.ondosocial.domain.user.dto.SignupResponseDto;
+import com.example.ondosocial.annotation.Auth;
+import com.example.ondosocial.domain.user.dto.*;
 import com.example.ondosocial.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.connector.Response;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,21 +18,29 @@ public class UserCotroller {
 
     //회원가입
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponseDto> signup(@RequestBody SignupRequestDto signupRequestDto) {
-        userService.signup(signupRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<Void> signup(@RequestBody SignupRequestDto request) {
+        String bearerToken = userService.signup(request.getEmail(), request.getPassword(), request.getName());
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.AUTHORIZATION, bearerToken)
+                .build();
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto){
-       userService.login(loginRequestDto);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<Void> login(@RequestBody LoginRequestDto request) {
+        String bearerToken = userService.signin(request.getEmail(), request.getPassword());
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.AUTHORIZATION, bearerToken)
+                .build();
     }
 
-    @DeleteMapping("/users/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id, @RequestBody DeleteRequestDto deleteRequestDto){
-        userService.delete(id, deleteRequestDto.getPassword());
-       return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    @DeleteMapping("/users")
+    public ResponseEntity<Void> delete(@Auth AuthUser authUser, @RequestBody DeleteRequestDto request) {
+        userService.delete(authUser.getId(), request.getPassword());
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 
 }

@@ -1,4 +1,4 @@
-package com.example.ondosocial.domain.user.config;
+package com.example.ondosocial.config.password;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,7 @@
 package com.example.ondosocial.domain.profile.service;
 
 
+import com.example.ondosocial.config.password.PasswordEncoder;
 import com.example.ondosocial.domain.profile.dto.request.ProfileUpdateRequestDto;
 import com.example.ondosocial.domain.profile.dto.response.ProfileResponseDto;
 import com.example.ondosocial.domain.profile.dto.response.ProfileUpdateResponseDto;
@@ -21,6 +22,7 @@ import java.util.regex.Pattern;
 public class ProfileService {
 
     private final ProfileRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public ResponseEntity<ProfileResponseDto> getUser(Long id) {
         User foundUser=userRepository.findById(id)
@@ -29,7 +31,9 @@ public class ProfileService {
         ProfileResponseDto userProfileDto=new ProfileResponseDto(
                 foundUser.getId(),
                 foundUser.getName(),
-                foundUser.getEmail()
+                foundUser.getEmail(),
+                foundUser.getFollowers().size(),
+                foundUser.getPosts().size()
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(userProfileDto);
@@ -41,7 +45,7 @@ public class ProfileService {
                 .orElseThrow(()-> new NullPointerException("해당 회원이 없습니다"));
 
         //비밀번호 일치 확인
-        if(!userUpdateRequestDto.getCurrentPassword().equals(user.getPassword())){
+        if(!passwordEncoder.matches(userUpdateRequestDto.getCurrentPassword(), user.getPassword())){
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다");
         }
         if(userUpdateRequestDto.getNewPassword()!=null){
@@ -51,7 +55,7 @@ public class ProfileService {
             }
         }
 
-        user.update(userUpdateRequestDto);
+        user.update(userUpdateRequestDto,passwordEncoder);
 
         ProfileUpdateResponseDto userUpdateDto=new ProfileUpdateResponseDto(
                 user.getId(),

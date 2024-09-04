@@ -88,4 +88,18 @@ public class PostService {
         post.update(title, content, celsius);
         return postRepository.save(post);
     }
+
+    public void delete(Long userId, Long postId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        if (user.isDeleted()) {
+            throw new IllegalArgumentException("User is deleted");
+        }
+
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        if(user != post.getUser()) {
+            throw new IllegalArgumentException("User is not the same user");
+        }
+
+        postRepository.delete(post);
+    }
 }

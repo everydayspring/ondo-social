@@ -14,8 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/posts")
@@ -40,7 +38,7 @@ public class PostController {
     @GetMapping("/followers")
     public ResponseEntity<Page<GetPostsDto.Response>> getpostsByFollower(@Auth AuthUser user, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity
-                .ok(postService.getPostsByFollowedUser(user.getId(),page - 1, size));
+                .ok(postService.getPostsByFollowedUser(user.getId(), page - 1, size));
     }
 
     @GetMapping("/{id}")
@@ -56,6 +54,9 @@ public class PostController {
         return ResponseEntity.ok(new PostUpdateDto.Response(post));
     }
 
-
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@Auth AuthUser user, @PathVariable Long id) {
+        postService.delete(user.getId(), id);
+        return ResponseEntity.noContent().build();
+    }
 }

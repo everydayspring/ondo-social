@@ -29,4 +29,10 @@ public class Post extends BaseEntity {
         this.celsius = celsius;
         this.user = user;
     }
+
+    public void update(String title, String content, int celsius) {
+        this.title = title;
+        this.content = content;
+        this.celsius = celsius;
+    }
 }

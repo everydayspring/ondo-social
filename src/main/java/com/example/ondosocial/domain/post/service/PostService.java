@@ -4,10 +4,12 @@ import com.example.ondosocial.domain.follower.entity.Follower;
 import com.example.ondosocial.domain.follower.repository.FollowerRepository;
 import com.example.ondosocial.domain.post.dto.GetPostDto;
 import com.example.ondosocial.domain.post.dto.GetPostsDto;
+import com.example.ondosocial.domain.post.dto.PostUpdateDto;
 import com.example.ondosocial.domain.post.entity.Post;
 import com.example.ondosocial.domain.post.repository.PostRepository;
 import com.example.ondosocial.domain.user.entity.User;
 import com.example.ondosocial.domain.user.repository.UserRepository;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -70,5 +72,20 @@ public class PostService {
     @Transactional(readOnly = true)
     public Post getPostById(Long id) {
         return postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+    }
+
+    public Post update(Long userId, Long postId, String title, String content, int celsius) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        if (user.isDeleted()) {
+            throw new IllegalArgumentException("User is deleted");
+        }
+
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        if(user != post.getUser()) {
+            throw new IllegalArgumentException("User is not the same user");
+        }
+
+        post.update(title, content, celsius);
+        return postRepository.save(post);
     }
 }

@@ -4,6 +4,7 @@ import com.example.ondosocial.annotation.Auth;
 import com.example.ondosocial.domain.post.dto.GetPostDto;
 import com.example.ondosocial.domain.post.dto.GetPostsDto;
 import com.example.ondosocial.domain.post.dto.PostCreateDto;
+import com.example.ondosocial.domain.post.dto.PostUpdateDto;
 import com.example.ondosocial.domain.post.entity.Post;
 import com.example.ondosocial.domain.post.service.PostService;
 import com.example.ondosocial.domain.user.dto.AuthUser;
@@ -48,6 +49,13 @@ public class PostController {
         return ResponseEntity
                 .ok(new GetPostDto.Response(post));
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<PostUpdateDto.Response> update(@Auth AuthUser user, @PathVariable Long id, @RequestBody @Valid PostUpdateDto.Request request) {
+        Post post = postService.update(user.getId(), id, request.getTitle(), request.getContent(), request.getCelsius());
+        return ResponseEntity.ok(new PostUpdateDto.Response(post));
+    }
+
 
 
 }

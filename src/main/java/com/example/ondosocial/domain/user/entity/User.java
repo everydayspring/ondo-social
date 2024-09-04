@@ -25,11 +25,15 @@ public class User extends BaseEntity {
     @ColumnDefault("false")
     private boolean deleted;
 
-    public User(String email, String password, String name, boolean deleted) {
+    public User(String email, String password, String name) {
         this.email = email;
         this.password = password;
         this.name = name;
-        this.deleted = deleted;
+    }
+
+    public void delete() {
+        this.deleted = true;
+
     }
 
     public void update(ProfileUpdateRequestDto userUpdateRequestDto) {

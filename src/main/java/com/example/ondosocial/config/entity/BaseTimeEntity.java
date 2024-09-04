@@ -1,5 +1,6 @@
 package com.example.ondosocial.config.entity;
 
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

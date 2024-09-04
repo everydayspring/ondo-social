@@ -2,10 +2,9 @@ package com.example.ondosocial.domain.post.entity;
 
 import com.example.ondosocial.config.entity.BaseEntity;
 import com.example.ondosocial.domain.user.entity.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+
+import jakarta.persistence.*;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +21,7 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private String celsius;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

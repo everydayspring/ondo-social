@@ -17,11 +17,11 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        boolean hasAuthAnnotation = Objects.nonNull(parameter.getParameterAnnotation(Auth.class));
+        boolean hasAuthAnnotation = parameter.getParameterAnnotation(Auth.class) != null;
         boolean isAuthUserType = parameter.getParameterType().equals(AuthUser.class);
 
         // @Auth 어노테이션과 AuthUser 타입이 함께 사용되지 않은 경우 예외 발생
-        if (Objects.equals(hasAuthAnnotation, isAuthUserType)) {
+        if (!Objects.equals(hasAuthAnnotation, isAuthUserType)) {
             throw new IllegalArgumentException(AuthErrorCode.AUTH_TYPE_ERROR.getMessage());
         }
 

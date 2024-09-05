@@ -77,7 +77,7 @@ public class UserController {
             return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
         }
 
-        GetUserDto.ServiseResponse response = userService.getUser(authUser.getId());
+        GetUserDto.ServiseResponse response = userService.getUser(id);
 
         return ResponseEntity.ok(
                 new GetUserDto.SimpleResponse(response.getAverageCelsius(), response.getUser()));

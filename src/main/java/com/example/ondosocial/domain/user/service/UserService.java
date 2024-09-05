@@ -1,8 +1,11 @@
 package com.example.ondosocial.domain.user.service;
 
 import com.example.ondosocial.config.auth.JwtUtil;
+import com.example.ondosocial.config.check.Check;
 import com.example.ondosocial.config.error.ErrorCode;
 import com.example.ondosocial.config.password.PasswordEncoder;
+import com.example.ondosocial.domain.follower.repository.FollowerRepository;
+import com.example.ondosocial.domain.post.repository.PostRepository;
 import com.example.ondosocial.domain.user.entity.User;
 import com.example.ondosocial.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,18 +13,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class UserService {
     private final UserRepository userRepository;
+    private final FollowerRepository followerRepository;
+    private final PostRepository postRepository;
+
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
+    private final Check check;
+
     public String signup(String email, String password, String name) {
-        emailCheck(email);
+        check.validateEmail(email);
 
         User user = new User(email, passwordEncoder.encode(password), name);
 
@@ -30,25 +37,26 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public String signin(String email, String password) {
-        User user = userCheck(email);
+        User user = check.validateUserExists(email);
 
-        passwordCheck(password, user);
+        check.passwordMatch(password, user);
 
         return jwtUtil.createToken(user.getId(), user.getEmail());
     }
 
+    @Transactional(readOnly = true)
     public User getUser(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
     }
 
     public void update(Long id, String email, String name, String password, String newPassword) {
-        User user = userCheck(id);
+        User user = check.validateUserExists(id);
 
-        passwordCheck(password, user);
+        check.passwordMatch(password, user);
 
         if (!user.getEmail().equals(email)) {
-            emailCheck(email);
+            check.validateEmail(email);
         }
 
         if (!newPassword.isBlank()) {
@@ -63,49 +71,13 @@ public class UserService {
     }
 
     public void delete(Long id, String password) {
-        User user = userCheck(id);
+        User user = check.validateUserExists(id);
 
-        passwordCheck(password, user);
+        check.passwordMatch(password, user);
+
+        followerRepository.deleteAllByUserOrFollower(user, user);
+        postRepository.deleteAllByUserId(id);
 
         user.delete();
-    }
-
-    public User userCheck(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
-
-        if (user.isDeleted()) {
-            throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());
-        }
-
-        return user;
-    }
-
-    public User userCheck(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
-                new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
-
-        if (user.isDeleted()) {
-            throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());
-        }
-
-        return user;
-    }
-
-    public void passwordCheck(String password, User user) {
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException(ErrorCode.PASSWORD_MISMATCH.getMessage());
-        }
-    }
-
-    public void emailCheck(String email) {
-        Optional<User> checkUser = userRepository.findByEmail(email);
-
-        if (checkUser.isPresent() && checkUser.get().isDeleted()) {
-            throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());
-        }
-        if (checkUser.isPresent()) {
-            throw new IllegalArgumentException(ErrorCode.ALREADY_SIGNED_UP_USER.getMessage());
-        }
     }
 }

@@ -30,7 +30,6 @@ public class User extends BaseEntity {
     private String name;
 
     @Column(nullable = false)
-    @ColumnDefault("false")
     private boolean deleted;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE)

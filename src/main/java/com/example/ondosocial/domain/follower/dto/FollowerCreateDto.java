@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 public class FollowerCreateDto {
-
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
@@ -14,5 +13,4 @@ public class FollowerCreateDto {
         @NotNull
         private Long followerId;
     }
-
 }

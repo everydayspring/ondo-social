@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 
 public class FollowerDeleteDto {
-
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
@@ -15,5 +14,4 @@ public class FollowerDeleteDto {
         @NotNull
         private Long followerId;
     }
-
 }

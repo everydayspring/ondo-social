@@ -19,7 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/followers")
 public class FollowerController {
-
     private final FollowerService followerService;
 
     /**
@@ -31,6 +30,7 @@ public class FollowerController {
     @PostMapping
     public ResponseEntity<Void> create(@Auth AuthUser user, @RequestBody @Valid FollowerCreateDto.Request request) {
         followerService.create(user.getId(), request.getFollowerId());
+
         return ResponseEntity
                 .ok()
                 .build();
@@ -64,6 +64,7 @@ public class FollowerController {
     @DeleteMapping
     public ResponseEntity<Void> delete(@Auth AuthUser user, @RequestBody @Valid FollowerDeleteDto.Request request) {
         followerService.delete(user.getId(), request.getFollowerId());
+
         return ResponseEntity
                 .noContent()
                 .build();

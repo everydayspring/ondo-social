@@ -7,8 +7,8 @@ public class GetFollowersDto {
 
     @Getter
     public static class Response {
-        private Long id;
-        private String name;
+        private final Long id;
+        private final String name;
 
         public Response(User user) {
             this.id = user.getId();

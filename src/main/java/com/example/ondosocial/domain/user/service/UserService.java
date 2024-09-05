@@ -10,6 +10,7 @@ import com.example.ondosocial.config.password.PasswordEncoder;
 import com.example.ondosocial.config.validate.Preconditions;
 import com.example.ondosocial.domain.follow.repository.FollowerRepository;
 import com.example.ondosocial.domain.post.repository.PostRepository;
+import com.example.ondosocial.domain.user.dto.GetUserDto;
 import com.example.ondosocial.domain.user.entity.User;
 import com.example.ondosocial.domain.user.repository.UserRepository;
 
@@ -57,8 +58,10 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public User getUser(Long id) {
-        return userRepository.findByIdOrElseThrow(id);
+    public GetUserDto.ServiseResponse getUser(Long id) {
+        return new GetUserDto.ServiseResponse(
+                postRepository.findAverageCelsiusByUserId(id),
+                userRepository.findByIdOrElseThrow(id));
     }
 
     public void update(Long id, String email, String name, String password, String newPassword) {

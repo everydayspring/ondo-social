@@ -6,6 +6,8 @@ import java.util.NoSuchElementException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.example.ondosocial.config.error.ErrorCode;
 import com.example.ondosocial.domain.post.entity.Post;
@@ -20,4 +22,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
                 .orElseThrow(
                         () -> new NoSuchElementException(ErrorCode.POST_NOT_FOUND.getMessage()));
     }
+
+    @Query("SELECT COALESCE(AVG(p.celsius), 0) FROM Post p WHERE p.user.id = :userId")
+    Double findAverageCelsiusByUserId(@Param("userId") Long userId);
 }

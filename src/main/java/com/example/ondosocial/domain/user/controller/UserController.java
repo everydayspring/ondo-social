@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.ondosocial.annotation.Auth;
 import com.example.ondosocial.domain.user.dto.*;
-import com.example.ondosocial.domain.user.entity.User;
 import com.example.ondosocial.domain.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -55,9 +54,10 @@ public class UserController {
      */
     @GetMapping("/users")
     public ResponseEntity<GetUserDto.DetailResponse> getUser(@Auth AuthUser authUser) {
-        User user = userService.getUser(authUser.getId());
+        GetUserDto.ServiseResponse response = userService.getUser(authUser.getId());
 
-        return ResponseEntity.ok(new GetUserDto.DetailResponse(user));
+        return ResponseEntity.ok(
+                new GetUserDto.DetailResponse(response.getAverageCelsius(), response.getUser()));
     }
 
     /**
@@ -77,9 +77,10 @@ public class UserController {
             return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
         }
 
-        User user = userService.getUser(id);
+        GetUserDto.ServiseResponse response = userService.getUser(authUser.getId());
 
-        return ResponseEntity.ok(new GetUserDto.SimpleResponse(user));
+        return ResponseEntity.ok(
+                new GetUserDto.SimpleResponse(response.getAverageCelsius(), response.getUser()));
     }
 
     /**

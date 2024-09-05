@@ -7,10 +7,10 @@ Ondo 프로젝트는 온도와 켜지다(ON)라는 중의적인 의미를 내포
 On기능을 사용해 친구를 팔로우 할 수 있습니다.
 
 # 🌡️ Team 25℃
-### [🌸 everydayspring](https://github.com/everydayspring)
-### [ jiyumi00](https://github.com/jiyumi00)
-### [ kanz-in-code](https://github.com/kanz-in-code)
-### [ k_chong](https://github.com/eunchongkang)
+#### [🌸 everydayspring](https://github.com/everydayspring)
+#### [🍊 **jiyumi00**](https://github.com/jiyumi00)
+#### [👤 kanz-in-code](https://github.com/kanz-in-code)
+#### [🌡️k_chong](https://github.com/eunchongkang)
 
 # 🚀 STACK
 

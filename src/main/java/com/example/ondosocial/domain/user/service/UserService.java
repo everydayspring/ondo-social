@@ -1,7 +1,5 @@
 package com.example.ondosocial.domain.user.service;
 
-import java.util.NoSuchElementException;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

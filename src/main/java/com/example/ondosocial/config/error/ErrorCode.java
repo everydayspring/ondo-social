@@ -16,7 +16,7 @@ public enum ErrorCode {
     NO_PERMISSION_TO_POST("게시물에 대한 권한이 없습니다."),
     FOLLOW_SELF_NOT_ALLOWED("본인 계정은 팔로우할 수 없습니다."),
     FOLLOWER_ALREADY_EXISTS("이미 팔로우 하고 있는 사용자 입니다."),
-    ;
+    FOLLOW_NOT_FOUND("팔로우하는 사용자가 아닙니다.");
 
     private final String message;
 }

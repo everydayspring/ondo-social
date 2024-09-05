@@ -34,7 +34,7 @@ public class FollowerService {
         Preconditions.validate(!follower.isDeleted(), ErrorCode.DELETED_USER);
 
         Preconditions.validate(
-                !Objects.nonNull(followerRepository.findOneByUserAndFollower(user, follower)),
+                followerRepository.findOneByUserAndFollower(user, follower).isEmpty(),
                 ErrorCode.FOLLOWER_ALREADY_EXISTS);
 
         followerRepository.save(new Follow(user, follower));
@@ -58,7 +58,7 @@ public class FollowerService {
 
         Preconditions.validate(!follower.isDeleted(), ErrorCode.DELETED_USER);
 
-        Follow follow = followerRepository.findOneByUserAndFollower(user, follower);
+        Follow follow = followerRepository.findOneByUserAndFollowerOrElseThrow(user, follower);
 
         followerRepository.delete(follow);
     }

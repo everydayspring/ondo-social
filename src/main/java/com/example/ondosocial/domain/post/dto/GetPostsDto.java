@@ -8,10 +8,10 @@ import java.time.LocalDateTime;
 public class GetPostsDto {
     @Getter
     public static class Response {
-        private String name;
-        private String title;
-        private int celsius;
-        private LocalDateTime createdAt;
+        private final String name;
+        private final String title;
+        private final int celsius;
+        private final LocalDateTime createdAt;
 
         public Response(Post post) {
             this.name = post.getUser().getName();

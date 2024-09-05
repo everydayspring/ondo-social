@@ -8,13 +8,13 @@ import java.time.LocalDateTime;
 public class GetPostDto {
     @Getter
     public static class Response {
-        private String email;
-        private String name;
-        private String title;
-        private String content;
-        private int celsius;
-        private LocalDateTime createdAt;
-        private LocalDateTime updatedAt;
+        private final String email;
+        private final String name;
+        private final String title;
+        private final String content;
+        private final int celsius;
+        private final LocalDateTime createdAt;
+        private final LocalDateTime updatedAt;
 
         public Response(Post post) {
             this.email = post.getUser().getEmail();

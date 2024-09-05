@@ -1,13 +1,12 @@
 package com.example.ondosocial.domain.post.service;
 
+import com.example.ondosocial.config.check.Check;
 import com.example.ondosocial.config.error.ErrorCode;
 import com.example.ondosocial.domain.follower.entity.Follower;
-import com.example.ondosocial.domain.follower.repository.FollowerRepository;
 import com.example.ondosocial.domain.post.dto.GetPostsDto;
 import com.example.ondosocial.domain.post.entity.Post;
 import com.example.ondosocial.domain.post.repository.PostRepository;
 import com.example.ondosocial.domain.user.entity.User;
-import com.example.ondosocial.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,42 +18,35 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class PostService {
-
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
-    private final FollowerRepository followerRepository;
+
+    private final Check check;
 
     public void create(Long id, String title, String content, int celsius) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
-        if (user.isDeleted()) {
-            throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());
-        }
-        Post post = new Post(title, content, celsius, user);
-        postRepository.save(post);
+        User user = check.validateUserExists(id);
+
+        postRepository.save(new Post(title, content, celsius, user));
     }
 
     @Transactional(readOnly = true)
     public Page<GetPostsDto.Response> getPosts(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Pageable pageable = createPage(page, size);
 
         Page<Post> posts = postRepository.findAll(pageable);
+
         return posts.map(GetPostsDto.Response::new);
     }
 
     @Transactional(readOnly = true)
-    public Page<GetPostsDto.Response> getPostsByFollowedUser(Long id, int page, int size) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
-        if (user.isDeleted()) {
-            throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());
-        }
+    public Page<GetPostsDto.Response> getFollowerPosts(Long id, int page, int size) {
+        User user = check.validateUserExists(id);
 
-        List<Follower> followers = followerRepository.findAllByUserId(id);
+        List<Follower> followers = user.getFollowers();
         List<Long> followerIds = new ArrayList<>();
 
         for (Follower follower : followers) {
@@ -62,43 +54,37 @@ public class PostService {
         }
         followerIds.add(id);
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Pageable pageable = createPage(page, size);
 
         Page<Post> posts = postRepository.findAllByUserIdIn(followerIds, pageable);
+
         return posts.map(GetPostsDto.Response::new);
     }
 
     @Transactional(readOnly = true)
-    public Post getPostById(Long id) {
+    public Post getPost(Long id) {
         return postRepository.findById(id).orElseThrow(() -> new NoSuchElementException(ErrorCode.POST_NOT_FOUND.getMessage()));
     }
 
     public Post update(Long userId, Long postId, String title, String content, int celsius) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
-        if (user.isDeleted()) {
-            throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());
-        }
+        User user = check.validateUserExists(userId);
 
-        Post post = postRepository.findById(postId).orElseThrow(() -> new NoSuchElementException(ErrorCode.POST_NOT_FOUND.getMessage()));
-        if(!Objects.equals(user, post.getUser())) {
-            throw new IllegalArgumentException(ErrorCode.NO_PERMISSION_TO_POST.getMessage());
-        }
+        Post post = check.postPermission(user, postId);
 
         post.update(title, content, celsius);
-        return postRepository.save(post);
+
+        return post;
     }
 
     public void delete(Long userId, Long postId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
-        if (user.isDeleted()) {
-            throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());
-        }
+        User user = check.validateUserExists(userId);
 
-        Post post = postRepository.findById(postId).orElseThrow(() -> new NoSuchElementException(ErrorCode.POST_NOT_FOUND.getMessage()));
-        if(!Objects.equals(user, post.getUser())) {
-            throw new IllegalArgumentException(ErrorCode.NO_PERMISSION_TO_POST.getMessage());
-        }
+        Post post = check.postPermission(user, postId);
 
         postRepository.delete(post);
+    }
+
+    private Pageable createPage(int page, int size) {
+        return PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 }

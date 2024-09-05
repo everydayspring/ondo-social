@@ -15,11 +15,13 @@ public class PostCreateDto {
     public static class Request {
         @NotBlank
         private String title;
+
         @NotBlank
         private String content;
+
         @NotNull
-        @Max(100)
         @Min(1)
+        @Max(100)
         private int celsius;
     }
 }

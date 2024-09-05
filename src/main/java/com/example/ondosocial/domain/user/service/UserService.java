@@ -53,10 +53,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User getUser(Long id) {
-        return userRepository
-                .findById(id)
-                .orElseThrow(
-                        () -> new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
+        return userRepository.findByIdOrElseThrow(id);
     }
 
     public void update(Long id, String email, String name, String password, String newPassword) {

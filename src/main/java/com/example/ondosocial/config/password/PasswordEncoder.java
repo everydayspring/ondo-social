@@ -2,6 +2,7 @@ package com.example.ondosocial.config.password;
 
 import java.util.regex.Pattern;
 
+import com.example.ondosocial.config.validate.Preconditions;
 import org.springframework.stereotype.Component;
 
 import com.example.ondosocial.config.error.ErrorCode;
@@ -17,9 +18,7 @@ public class PasswordEncoder {
 
         Pattern pattern = Pattern.compile(passwordPattern);
 
-        if (!pattern.matcher(rawPassword).matches()) {
-            throw new IllegalArgumentException(ErrorCode.INVALID_PASSWORD_FORMAT.getMessage());
-        }
+        Preconditions.validate(pattern.matcher(rawPassword).matches(), ErrorCode.INVALID_PASSWORD_FORMAT);
 
         return BCrypt.withDefaults().hashToString(BCrypt.MIN_COST, rawPassword.toCharArray());
     }

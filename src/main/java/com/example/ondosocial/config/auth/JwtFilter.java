@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,6 +22,8 @@ public class JwtFilter implements Filter {
 
     private final JwtUtil jwtUtil;
     private static final String AUTHORIZATION = "Authorization";
+    private static final List<String> PERMIT_ALL_URIS = List.of("/signin", "/signup");
+
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -33,7 +37,7 @@ public class JwtFilter implements Filter {
 
         String url = httpRequest.getRequestURI();
 
-        if (url.startsWith("/sign")) {
+        if (PERMIT_ALL_URIS.contains(url)) {
             chain.doFilter(request, response);
             return;
         }

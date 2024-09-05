@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.ondosocial.config.auth.JwtUtil;
-import com.example.ondosocial.config.check.Check;
 import com.example.ondosocial.config.error.ErrorCode;
 import com.example.ondosocial.config.password.PasswordEncoder;
+import com.example.ondosocial.config.validate.Preconditions;
 import com.example.ondosocial.domain.follow.repository.FollowerRepository;
 import com.example.ondosocial.domain.post.repository.PostRepository;
 import com.example.ondosocial.domain.user.entity.User;
@@ -27,10 +27,12 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    private final Check check;
-
     public String signup(String email, String password, String name) {
-        check.validateEmail(email);
+        Preconditions.validate(
+                userRepository.findByEmailAndDeletedFalse(email).isEmpty(),
+                ErrorCode.ALREADY_SIGNED_UP_USER);
+        Preconditions.validate(
+                userRepository.findByEmailAndDeletedTrue(email).isEmpty(), ErrorCode.DELETED_USER);
 
         User user = new User(email, passwordEncoder.encode(password), name);
 
@@ -39,9 +41,12 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public String signin(String email, String password) {
-        User user = check.validateUserExists(email);
+        User user = userRepository.findByEmailOrElseThrow(email);
 
-        check.passwordMatch(password, user);
+        Preconditions.validate(!user.isDeleted(), ErrorCode.DELETED_USER);
+
+        Preconditions.validate(
+                passwordEncoder.matches(password, user.getPassword()), ErrorCode.PASSWORD_MISMATCH);
 
         return jwtUtil.createToken(user.getId(), user.getEmail());
     }
@@ -55,13 +60,21 @@ public class UserService {
     }
 
     public void update(Long id, String email, String name, String password, String newPassword) {
-        User user = check.validateUserExists(id);
+        User user = userRepository.findByIdOrElseThrow(id);
 
-        check.passwordMatch(password, user);
+        Preconditions.validate(!user.isDeleted(), ErrorCode.DELETED_USER);
 
-        if (!user.getEmail().equals(email)) {
-            check.validateEmail(email);
-        }
+        Preconditions.validate(
+                passwordEncoder.matches(password, user.getPassword()), ErrorCode.PASSWORD_MISMATCH);
+
+        Preconditions.validate(
+                user.getEmail().equals(email)
+                        || userRepository.findByEmailAndDeletedFalse(email).isEmpty(),
+                ErrorCode.ALREADY_SIGNED_UP_USER);
+        Preconditions.validate(
+                user.getEmail().equals(email)
+                        || userRepository.findByEmailAndDeletedTrue(email).isEmpty(),
+                ErrorCode.DELETED_USER);
 
         if (!newPassword.isBlank()) {
             if (passwordEncoder.matches(newPassword, user.getPassword())) {
@@ -76,9 +89,12 @@ public class UserService {
     }
 
     public void delete(Long id, String password) {
-        User user = check.validateUserExists(id);
+        User user = userRepository.findByIdOrElseThrow(id);
 
-        check.passwordMatch(password, user);
+        Preconditions.validate(!user.isDeleted(), ErrorCode.DELETED_USER);
+
+        Preconditions.validate(
+                passwordEncoder.matches(password, user.getPassword()), ErrorCode.PASSWORD_MISMATCH);
 
         followerRepository.deleteAllByUserOrFollower(user, user);
         postRepository.deleteAllByUserId(id);

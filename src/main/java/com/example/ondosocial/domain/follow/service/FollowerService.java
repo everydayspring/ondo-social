@@ -6,8 +6,8 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.ondosocial.config.check.Check;
 import com.example.ondosocial.config.error.ErrorCode;
+import com.example.ondosocial.config.validate.Preconditions;
 import com.example.ondosocial.domain.follow.entity.Follow;
 import com.example.ondosocial.domain.follow.repository.FollowerRepository;
 import com.example.ondosocial.domain.user.entity.User;
@@ -22,35 +22,43 @@ public class FollowerService {
     private final FollowerRepository followerRepository;
     private final UserRepository userRepository;
 
-    private final Check check;
-
     public void create(Long id, Long followerId) {
-        if (Objects.equals(id, followerId)) {
-            throw new IllegalArgumentException(ErrorCode.FOLLOW_SELF_NOT_ALLOWED.getMessage());
-        }
+        Preconditions.validate(!Objects.equals(id, followerId), ErrorCode.FOLLOW_SELF_NOT_ALLOWED);
 
-        User user = check.validateUserExists(id);
-        User follower = check.validateUserExists(followerId);
+        User user = userRepository.findByIdOrElseThrow(id);
 
-        if (Objects.nonNull(followerRepository.findOneByUserAndFollower(user, follower))) {
-            throw new IllegalArgumentException(ErrorCode.FOLLOWER_ALREADY_EXISTS.getMessage());
-        }
+        Preconditions.validate(!user.isDeleted(), ErrorCode.DELETED_USER);
+
+        User follower = userRepository.findByIdOrElseThrow(followerId);
+
+        Preconditions.validate(!follower.isDeleted(), ErrorCode.DELETED_USER);
+
+        Preconditions.validate(
+                !Objects.nonNull(followerRepository.findOneByUserAndFollower(user, follower)),
+                ErrorCode.FOLLOWER_ALREADY_EXISTS);
 
         followerRepository.save(new Follow(user, follower));
     }
 
     @Transactional(readOnly = true)
     public List<Follow> getFollowers(Long id) {
-        User user = check.validateUserExists(id);
+        User user = userRepository.findByIdOrElseThrow(id);
+
+        Preconditions.validate(!user.isDeleted(), ErrorCode.DELETED_USER);
 
         return followerRepository.findAllByUser(user);
     }
 
     public void delete(Long id, Long followerId) {
-        User user = check.validateUserExists(id);
-        User followerUser = check.validateUserExists(followerId);
+        User user = userRepository.findByIdOrElseThrow(id);
 
-        Follow follow = followerRepository.findOneByUserAndFollower(user, followerUser);
+        Preconditions.validate(!user.isDeleted(), ErrorCode.DELETED_USER);
+
+        User follower = userRepository.findByIdOrElseThrow(followerId);
+
+        Preconditions.validate(!follower.isDeleted(), ErrorCode.DELETED_USER);
+
+        Follow follow = followerRepository.findOneByUserAndFollower(user, follower);
 
         followerRepository.delete(follow);
     }

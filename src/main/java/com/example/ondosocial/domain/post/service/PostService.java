@@ -2,7 +2,7 @@ package com.example.ondosocial.domain.post.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,13 +11,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.ondosocial.config.check.Check;
 import com.example.ondosocial.config.error.ErrorCode;
+import com.example.ondosocial.config.validate.Preconditions;
 import com.example.ondosocial.domain.follow.entity.Follow;
 import com.example.ondosocial.domain.post.dto.GetPostsDto;
 import com.example.ondosocial.domain.post.entity.Post;
 import com.example.ondosocial.domain.post.repository.PostRepository;
 import com.example.ondosocial.domain.user.entity.User;
+import com.example.ondosocial.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,11 +27,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-
-    private final Check check;
+    private final UserRepository userRepository;
 
     public void create(Long id, String title, String content, int celsius) {
-        User user = check.validateUserExists(id);
+        User user = userRepository.findByIdOrElseThrow(id);
+
+        Preconditions.validate(!user.isDeleted(), ErrorCode.DELETED_USER);
 
         postRepository.save(new Post(title, content, celsius, user));
     }
@@ -46,7 +48,9 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public Page<GetPostsDto.Response> getFollowerPosts(Long id, int page, int size) {
-        User user = check.validateUserExists(id);
+        User user = userRepository.findByIdOrElseThrow(id);
+
+        Preconditions.validate(!user.isDeleted(), ErrorCode.DELETED_USER);
 
         List<Follow> follows = user.getFollows();
         List<Long> followerIds = new ArrayList<>();
@@ -65,26 +69,32 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public Post getPost(Long id) {
-        return postRepository
-                .findById(id)
-                .orElseThrow(
-                        () -> new NoSuchElementException(ErrorCode.POST_NOT_FOUND.getMessage()));
+        return postRepository.findByIdOrElseThrow(id);
     }
 
     public Post update(Long userId, Long postId, String title, String content, int celsius) {
-        User user = check.validateUserExists(userId);
+        User user = userRepository.findByIdOrElseThrow(userId);
 
-        Post post = check.postPermission(user, postId);
+        Preconditions.validate(!user.isDeleted(), ErrorCode.DELETED_USER);
 
+        Post post = postRepository.findByIdOrElseThrow(postId);
+
+        Preconditions.validate(
+                Objects.equals(user, post.getUser()), ErrorCode.NO_PERMISSION_TO_POST);
         post.update(title, content, celsius);
 
         return post;
     }
 
     public void delete(Long userId, Long postId) {
-        User user = check.validateUserExists(userId);
+        User user = userRepository.findByIdOrElseThrow(userId);
 
-        Post post = check.postPermission(user, postId);
+        Preconditions.validate(!user.isDeleted(), ErrorCode.DELETED_USER);
+
+        Post post = postRepository.findByIdOrElseThrow(postId);
+
+        Preconditions.validate(
+                Objects.equals(user, post.getUser()), ErrorCode.NO_PERMISSION_TO_POST);
 
         postRepository.delete(post);
     }

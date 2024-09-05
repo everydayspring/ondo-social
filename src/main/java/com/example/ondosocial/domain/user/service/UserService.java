@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.ondosocial.config.auth.JwtUtil;
 import com.example.ondosocial.config.error.ErrorCode;
+import com.example.ondosocial.config.log.Log;
 import com.example.ondosocial.config.password.PasswordEncoder;
 import com.example.ondosocial.config.validate.Preconditions;
 import com.example.ondosocial.domain.follow.repository.FollowerRepository;
@@ -13,7 +14,9 @@ import com.example.ondosocial.domain.user.entity.User;
 import com.example.ondosocial.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -34,6 +37,8 @@ public class UserService {
 
         User user = new User(email, passwordEncoder.encode(password), name);
 
+        Log.success(this.getClass().getName());
+
         return jwtUtil.createToken(userRepository.save(user).getId(), email);
     }
 
@@ -45,6 +50,8 @@ public class UserService {
 
         Preconditions.validate(
                 passwordEncoder.matches(password, user.getPassword()), ErrorCode.PASSWORD_MISMATCH);
+
+        Log.success(this.getClass().getName());
 
         return jwtUtil.createToken(user.getId(), user.getEmail());
     }
@@ -81,6 +88,8 @@ public class UserService {
         } else {
             user.update(email, name);
         }
+
+        Log.success(this.getClass().getName());
     }
 
     public void delete(Long id, String password) {
@@ -95,5 +104,7 @@ public class UserService {
         postRepository.deleteAllByUserId(id);
 
         user.delete();
+
+        Log.success(this.getClass().getName());
     }
 }

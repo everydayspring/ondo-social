@@ -3,6 +3,7 @@ package com.example.ondosocial.domain.follow.service;
 import java.util.List;
 import java.util.Objects;
 
+import com.example.ondosocial.config.log.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +39,8 @@ public class FollowerService {
                 ErrorCode.FOLLOWER_ALREADY_EXISTS);
 
         followerRepository.save(new Follow(user, follower));
+
+        Log.success(this.getClass().getName());
     }
 
     @Transactional(readOnly = true)
@@ -61,5 +64,7 @@ public class FollowerService {
         Follow follow = followerRepository.findOneByUserAndFollowerOrElseThrow(user, follower);
 
         followerRepository.delete(follow);
+
+        Log.success(this.getClass().getName());
     }
 }

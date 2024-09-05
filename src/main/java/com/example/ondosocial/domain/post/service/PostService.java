@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.example.ondosocial.config.log.Log;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +36,8 @@ public class PostService {
         Preconditions.validate(!user.isDeleted(), ErrorCode.DELETED_USER);
 
         postRepository.save(new Post(title, content, celsius, user));
+
+        Log.success(this.getClass().getName());
     }
 
     @Transactional(readOnly = true)
@@ -97,6 +100,8 @@ public class PostService {
                 Objects.equals(user, post.getUser()), ErrorCode.NO_PERMISSION_TO_POST);
 
         postRepository.delete(post);
+
+        Log.success(this.getClass().getName());
     }
 
     private Pageable createPage(int page, int size) {

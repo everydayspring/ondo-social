@@ -1,5 +1,13 @@
 package com.example.ondosocial.domain.follower.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.validation.Valid;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import com.example.ondosocial.annotation.Auth;
 import com.example.ondosocial.domain.follower.dto.FollowerCreateDto;
 import com.example.ondosocial.domain.follower.dto.FollowerDeleteDto;
@@ -7,13 +15,8 @@ import com.example.ondosocial.domain.follower.dto.GetFollowersDto;
 import com.example.ondosocial.domain.follower.entity.Follower;
 import com.example.ondosocial.domain.follower.service.FollowerService;
 import com.example.ondosocial.domain.user.dto.AuthUser;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,25 +25,22 @@ public class FollowerController {
     private final FollowerService followerService;
 
     /**
-     * 친구 등록
+     * 친구 등록 @Headers Authorization
      *
-     * @Headers Authorization
      * @body FollowerCreateDto.Request
      */
     @PostMapping
-    public ResponseEntity<Void> create(@Auth AuthUser user, @RequestBody @Valid FollowerCreateDto.Request request) {
+    public ResponseEntity<Void> create(
+            @Auth AuthUser user, @RequestBody @Valid FollowerCreateDto.Request request) {
         followerService.create(user.getId(), request.getFollowerId());
 
-        return ResponseEntity
-                .ok()
-                .build();
+        return ResponseEntity.ok().build();
     }
 
     /**
      * 친구 조회
      *
-     * @return List<GetFollowersDto.Response>
-     * @Headers Authorization
+     * @return List<GetFollowersDto.Response> @Headers Authorization
      */
     @GetMapping
     public ResponseEntity<List<GetFollowersDto.Response>> getFollowers(@Auth AuthUser user) {
@@ -51,22 +51,19 @@ public class FollowerController {
             followerUsers.add(new GetFollowersDto.Response(follower.getFollower()));
         }
 
-        return ResponseEntity
-                .ok(followerUsers);
+        return ResponseEntity.ok(followerUsers);
     }
 
     /**
-     * 친구 삭제
+     * 친구 삭제 @Headers Authorization
      *
-     * @Headers Authorization
      * @body FollowerDeleteDto.Request
      */
     @DeleteMapping
-    public ResponseEntity<Void> delete(@Auth AuthUser user, @RequestBody @Valid FollowerDeleteDto.Request request) {
+    public ResponseEntity<Void> delete(
+            @Auth AuthUser user, @RequestBody @Valid FollowerDeleteDto.Request request) {
         followerService.delete(user.getId(), request.getFollowerId());
 
-        return ResponseEntity
-                .noContent()
-                .build();
+        return ResponseEntity.noContent().build();
     }
 }

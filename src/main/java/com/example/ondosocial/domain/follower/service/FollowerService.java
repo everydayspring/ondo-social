@@ -1,17 +1,19 @@
 package com.example.ondosocial.domain.follower.service;
 
+import java.util.List;
+import java.util.Objects;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.ondosocial.config.check.Check;
 import com.example.ondosocial.config.error.ErrorCode;
 import com.example.ondosocial.domain.follower.entity.Follower;
 import com.example.ondosocial.domain.follower.repository.FollowerRepository;
 import com.example.ondosocial.domain.user.entity.User;
 import com.example.ondosocial.domain.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Objects;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional

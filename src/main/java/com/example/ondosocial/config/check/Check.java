@@ -1,17 +1,19 @@
 package com.example.ondosocial.config.check;
 
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.springframework.stereotype.Component;
+
 import com.example.ondosocial.config.error.ErrorCode;
 import com.example.ondosocial.config.password.PasswordEncoder;
 import com.example.ondosocial.domain.post.entity.Post;
 import com.example.ondosocial.domain.post.repository.PostRepository;
 import com.example.ondosocial.domain.user.entity.User;
 import com.example.ondosocial.domain.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -22,8 +24,13 @@ public class Check {
     private final PasswordEncoder passwordEncoder;
 
     public User validateUserExists(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
+        User user =
+                userRepository
+                        .findById(id)
+                        .orElseThrow(
+                                () ->
+                                        new NoSuchElementException(
+                                                ErrorCode.USER_NOT_FOUND.getMessage()));
 
         if (user.isDeleted()) {
             throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());
@@ -33,8 +40,13 @@ public class Check {
     }
 
     public User validateUserExists(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
-                new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
+        User user =
+                userRepository
+                        .findByEmail(email)
+                        .orElseThrow(
+                                () ->
+                                        new NoSuchElementException(
+                                                ErrorCode.USER_NOT_FOUND.getMessage()));
 
         if (user.isDeleted()) {
             throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());
@@ -61,9 +73,15 @@ public class Check {
     }
 
     public Post postPermission(User user, Long id) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new NoSuchElementException(ErrorCode.POST_NOT_FOUND.getMessage()));
+        Post post =
+                postRepository
+                        .findById(id)
+                        .orElseThrow(
+                                () ->
+                                        new NoSuchElementException(
+                                                ErrorCode.POST_NOT_FOUND.getMessage()));
 
-        if(!Objects.equals(user, post.getUser())) {
+        if (!Objects.equals(user, post.getUser())) {
             throw new IllegalArgumentException(ErrorCode.NO_PERMISSION_TO_POST.getMessage());
         }
 

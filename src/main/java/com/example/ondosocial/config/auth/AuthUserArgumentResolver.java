@@ -1,9 +1,9 @@
 package com.example.ondosocial.config.auth;
 
-import com.example.ondosocial.annotation.Auth;
-import com.example.ondosocial.config.error.AuthErrorCode;
-import com.example.ondosocial.domain.user.dto.AuthUser;
+import java.util.Objects;
+
 import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.core.MethodParameter;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -11,7 +11,9 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import java.util.Objects;
+import com.example.ondosocial.annotation.Auth;
+import com.example.ondosocial.config.error.AuthErrorCode;
+import com.example.ondosocial.domain.user.dto.AuthUser;
 
 public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
 
@@ -33,8 +35,7 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
             @Nullable MethodParameter parameter,
             @Nullable ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest,
-            @Nullable WebDataBinderFactory binderFactory
-    ) {
+            @Nullable WebDataBinderFactory binderFactory) {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 
         // JwtFilter 에서 set 한 userId, email 값을 가져옴

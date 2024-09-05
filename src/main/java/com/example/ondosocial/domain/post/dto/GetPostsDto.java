@@ -1,9 +1,10 @@
 package com.example.ondosocial.domain.post.dto;
 
-import com.example.ondosocial.domain.post.entity.Post;
-import lombok.Getter;
-
 import java.time.LocalDateTime;
+
+import com.example.ondosocial.domain.post.entity.Post;
+
+import lombok.Getter;
 
 public class GetPostsDto {
     @Getter

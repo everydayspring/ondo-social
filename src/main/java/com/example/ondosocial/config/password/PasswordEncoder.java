@@ -1,16 +1,19 @@
 package com.example.ondosocial.config.password;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
-import com.example.ondosocial.config.error.ErrorCode;
+import java.util.regex.Pattern;
+
 import org.springframework.stereotype.Component;
 
-import java.util.regex.Pattern;
+import com.example.ondosocial.config.error.ErrorCode;
+
+import at.favre.lib.crypto.bcrypt.BCrypt;
 
 @Component
 public class PasswordEncoder {
 
     public String encode(String rawPassword) {
-        String passwordPattern = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&])[A-Za-z0-9$@$!%*#?&]{8,}$";
+        String passwordPattern =
+                "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&])[A-Za-z0-9$@$!%*#?&]{8,}$";
 
         Pattern pattern = Pattern.compile(passwordPattern);
 
@@ -26,4 +29,3 @@ public class PasswordEncoder {
         return result.verified;
     }
 }
-

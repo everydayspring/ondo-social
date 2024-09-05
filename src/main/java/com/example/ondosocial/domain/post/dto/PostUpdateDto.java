@@ -1,26 +1,26 @@
 package com.example.ondosocial.domain.post.dto;
 
-import com.example.ondosocial.domain.post.entity.Post;
+import java.time.LocalDateTime;
+
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+
+import com.example.ondosocial.domain.post.entity.Post;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 public class PostUpdateDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Request {
-        @NotBlank
-        private String title;
+        @NotBlank private String title;
 
-        @NotBlank
-        private String content;
+        @NotBlank private String content;
 
         @NotNull
         @Min(1)

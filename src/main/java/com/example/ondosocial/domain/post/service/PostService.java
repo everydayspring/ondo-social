@@ -1,13 +1,9 @@
 package com.example.ondosocial.domain.post.service;
 
-import com.example.ondosocial.config.check.Check;
-import com.example.ondosocial.config.error.ErrorCode;
-import com.example.ondosocial.domain.follower.entity.Follower;
-import com.example.ondosocial.domain.post.dto.GetPostsDto;
-import com.example.ondosocial.domain.post.entity.Post;
-import com.example.ondosocial.domain.post.repository.PostRepository;
-import com.example.ondosocial.domain.user.entity.User;
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +11,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import com.example.ondosocial.config.check.Check;
+import com.example.ondosocial.config.error.ErrorCode;
+import com.example.ondosocial.domain.follower.entity.Follower;
+import com.example.ondosocial.domain.post.dto.GetPostsDto;
+import com.example.ondosocial.domain.post.entity.Post;
+import com.example.ondosocial.domain.post.repository.PostRepository;
+import com.example.ondosocial.domain.user.entity.User;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional
@@ -63,7 +65,10 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public Post getPost(Long id) {
-        return postRepository.findById(id).orElseThrow(() -> new NoSuchElementException(ErrorCode.POST_NOT_FOUND.getMessage()));
+        return postRepository
+                .findById(id)
+                .orElseThrow(
+                        () -> new NoSuchElementException(ErrorCode.POST_NOT_FOUND.getMessage()));
     }
 
     public Post update(Long userId, Long postId, String title, String content, int celsius) {

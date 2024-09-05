@@ -11,5 +11,4 @@ public class OndoSocialApplication {
     public static void main(String[] args) {
         SpringApplication.run(OndoSocialApplication.class, args);
     }
-
 }

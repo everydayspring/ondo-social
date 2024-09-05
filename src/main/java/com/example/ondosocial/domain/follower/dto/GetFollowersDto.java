@@ -1,6 +1,7 @@
 package com.example.ondosocial.domain.follower.dto;
 
 import com.example.ondosocial.domain.user.entity.User;
+
 import lombok.Getter;
 
 public class GetFollowersDto {

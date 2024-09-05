@@ -1,5 +1,10 @@
 package com.example.ondosocial.domain.user.service;
 
+import java.util.NoSuchElementException;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.ondosocial.config.auth.JwtUtil;
 import com.example.ondosocial.config.check.Check;
 import com.example.ondosocial.config.error.ErrorCode;
@@ -8,11 +13,8 @@ import com.example.ondosocial.domain.follower.repository.FollowerRepository;
 import com.example.ondosocial.domain.post.repository.PostRepository;
 import com.example.ondosocial.domain.user.entity.User;
 import com.example.ondosocial.domain.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.NoSuchElementException;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -46,8 +48,10 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User getUser(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
+        return userRepository
+                .findById(id)
+                .orElseThrow(
+                        () -> new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
     }
 
     public void update(Long id, String email, String name, String password, String newPassword) {
@@ -61,7 +65,8 @@ public class UserService {
 
         if (!newPassword.isBlank()) {
             if (passwordEncoder.matches(newPassword, user.getPassword())) {
-                throw new IllegalArgumentException(ErrorCode.SAME_PASSWORD_NOT_ALLOWED.getMessage());
+                throw new IllegalArgumentException(
+                        ErrorCode.SAME_PASSWORD_NOT_ALLOWED.getMessage());
             }
 
             user.update(email, passwordEncoder.encode(newPassword), name);

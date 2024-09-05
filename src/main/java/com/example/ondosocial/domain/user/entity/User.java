@@ -1,17 +1,19 @@
 package com.example.ondosocial.domain.user.entity;
 
-import com.example.ondosocial.config.entity.BaseEntity;
-import com.example.ondosocial.domain.follower.entity.Follower;
-import com.example.ondosocial.domain.post.entity.Post;
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+
+import com.example.ondosocial.config.entity.BaseEntity;
+import com.example.ondosocial.domain.follower.entity.Follower;
+import com.example.ondosocial.domain.post.entity.Post;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity

@@ -1,20 +1,21 @@
 package com.example.ondosocial.config.auth;
 
+import java.io.IOException;
+import java.util.List;
+
+import jakarta.servlet.*;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import com.example.ondosocial.config.error.AuthErrorCode;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import jakarta.servlet.FilterConfig;
-import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,14 +25,14 @@ public class JwtFilter implements Filter {
     private static final String AUTHORIZATION = "Authorization";
     private static final List<String> PERMIT_ALL_URIS = List.of("/signin", "/signup");
 
-
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
@@ -57,19 +58,27 @@ public class JwtFilter implements Filter {
             chain.doFilter(request, response);
         } catch (SecurityException | MalformedJwtException e) {
             log.error(AuthErrorCode.INVALID_SIGNATURE.getMessage(), e);
-            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, AuthErrorCode.INVALID_SIGNATURE.getMessage());
+            httpResponse.sendError(
+                    HttpServletResponse.SC_UNAUTHORIZED,
+                    AuthErrorCode.INVALID_SIGNATURE.getMessage());
         } catch (ExpiredJwtException e) {
             log.error(AuthErrorCode.EXPIRED_TOKEN.getMessage(), e);
-            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, AuthErrorCode.EXPIRED_TOKEN.getMessage());
+            httpResponse.sendError(
+                    HttpServletResponse.SC_UNAUTHORIZED, AuthErrorCode.EXPIRED_TOKEN.getMessage());
         } catch (UnsupportedJwtException e) {
             log.error(AuthErrorCode.UNSUPPORTED_TOKEN.getMessage(), e);
-            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, AuthErrorCode.UNSUPPORTED_TOKEN.getMessage());
+            httpResponse.sendError(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    AuthErrorCode.UNSUPPORTED_TOKEN.getMessage());
         } catch (IllegalArgumentException e) {
             log.error(AuthErrorCode.EMPTY_CLAIMS.getMessage(), e);
-            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, AuthErrorCode.EMPTY_CLAIMS.getMessage());
+            httpResponse.sendError(
+                    HttpServletResponse.SC_BAD_REQUEST, AuthErrorCode.EMPTY_CLAIMS.getMessage());
         } catch (Exception e) {
             log.error(AuthErrorCode.TOKEN_VERIFICATION_ERROR.getMessage(), e);
-            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, AuthErrorCode.TOKEN_VERIFICATION_ERROR.getMessage());
+            httpResponse.sendError(
+                    HttpServletResponse.SC_UNAUTHORIZED,
+                    AuthErrorCode.TOKEN_VERIFICATION_ERROR.getMessage());
         }
     }
 

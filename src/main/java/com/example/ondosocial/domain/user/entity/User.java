@@ -9,7 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 
 import com.example.ondosocial.config.entity.BaseEntity;
-import com.example.ondosocial.domain.follower.entity.Follower;
+import com.example.ondosocial.domain.follow.entity.Follow;
 import com.example.ondosocial.domain.post.entity.Post;
 
 import lombok.Getter;
@@ -32,7 +32,7 @@ public class User extends BaseEntity {
     private boolean deleted;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    List<Follower> followers = new ArrayList<>();
+    List<Follow> follows = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     List<Post> posts = new ArrayList<>();

@@ -1,4 +1,4 @@
-package com.example.ondosocial.domain.follower.controller;
+package com.example.ondosocial.domain.follow.controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.ondosocial.annotation.Auth;
-import com.example.ondosocial.domain.follower.dto.FollowerCreateDto;
-import com.example.ondosocial.domain.follower.dto.FollowerDeleteDto;
-import com.example.ondosocial.domain.follower.dto.GetFollowersDto;
-import com.example.ondosocial.domain.follower.entity.Follower;
-import com.example.ondosocial.domain.follower.service.FollowerService;
+import com.example.ondosocial.domain.follow.dto.FollowerCreateDto;
+import com.example.ondosocial.domain.follow.dto.FollowerDeleteDto;
+import com.example.ondosocial.domain.follow.dto.GetFollowersDto;
+import com.example.ondosocial.domain.follow.entity.Follow;
+import com.example.ondosocial.domain.follow.service.FollowerService;
 import com.example.ondosocial.domain.user.dto.AuthUser;
 
 import lombok.RequiredArgsConstructor;
@@ -44,11 +44,11 @@ public class FollowerController {
      */
     @GetMapping
     public ResponseEntity<List<GetFollowersDto.Response>> getFollowers(@Auth AuthUser user) {
-        List<Follower> followers = followerService.getFollowers(user.getId());
+        List<Follow> follows = followerService.getFollowers(user.getId());
         List<GetFollowersDto.Response> followerUsers = new ArrayList<>();
 
-        for (Follower follower : followers) {
-            followerUsers.add(new GetFollowersDto.Response(follower.getFollower()));
+        for (Follow follow : follows) {
+            followerUsers.add(new GetFollowersDto.Response(follow.getFollower()));
         }
 
         return ResponseEntity.ok(followerUsers);

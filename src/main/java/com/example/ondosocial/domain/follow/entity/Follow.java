@@ -1,4 +1,4 @@
-package com.example.ondosocial.domain.follower.entity;
+package com.example.ondosocial.domain.follow.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Follower extends BaseEntity {
+public class Follow extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -23,7 +23,7 @@ public class Follower extends BaseEntity {
     @JoinColumn(name = "follower_id", nullable = false)
     private User follower;
 
-    public Follower(User user, User follower) {
+    public Follow(User user, User follower) {
         this.user = user;
         this.follower = follower;
     }

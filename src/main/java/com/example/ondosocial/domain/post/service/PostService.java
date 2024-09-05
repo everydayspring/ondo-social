@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.ondosocial.config.check.Check;
 import com.example.ondosocial.config.error.ErrorCode;
-import com.example.ondosocial.domain.follower.entity.Follower;
+import com.example.ondosocial.domain.follow.entity.Follow;
 import com.example.ondosocial.domain.post.dto.GetPostsDto;
 import com.example.ondosocial.domain.post.entity.Post;
 import com.example.ondosocial.domain.post.repository.PostRepository;
@@ -48,11 +48,11 @@ public class PostService {
     public Page<GetPostsDto.Response> getFollowerPosts(Long id, int page, int size) {
         User user = check.validateUserExists(id);
 
-        List<Follower> followers = user.getFollowers();
+        List<Follow> follows = user.getFollows();
         List<Long> followerIds = new ArrayList<>();
 
-        for (Follower follower : followers) {
-            followerIds.add(follower.getFollower().getId());
+        for (Follow follow : follows) {
+            followerIds.add(follow.getFollower().getId());
         }
         followerIds.add(id);
 

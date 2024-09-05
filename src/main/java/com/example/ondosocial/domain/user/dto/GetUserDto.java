@@ -22,7 +22,7 @@ public class GetUserDto {
             this.name = user.getName();
             this.email = user.getEmail();
             this.postCount = user.getPosts().size();
-            this.followerCount = user.getFollowers().size();
+            this.followerCount = user.getFollows().size();
             this.createdAt = user.getCreatedAt();
             this.updatedAt = user.getUpdatedAt();
         }
@@ -41,7 +41,7 @@ public class GetUserDto {
             this.name = user.getName();
             this.email = user.getEmail();
             this.postCount = user.getPosts().size();
-            this.followerCount = user.getFollowers().size();
+            this.followerCount = user.getFollows().size();
         }
     }
 }

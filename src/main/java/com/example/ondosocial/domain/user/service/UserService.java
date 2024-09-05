@@ -9,7 +9,7 @@ import com.example.ondosocial.config.auth.JwtUtil;
 import com.example.ondosocial.config.check.Check;
 import com.example.ondosocial.config.error.ErrorCode;
 import com.example.ondosocial.config.password.PasswordEncoder;
-import com.example.ondosocial.domain.follower.repository.FollowerRepository;
+import com.example.ondosocial.domain.follow.repository.FollowerRepository;
 import com.example.ondosocial.domain.post.repository.PostRepository;
 import com.example.ondosocial.domain.user.entity.User;
 import com.example.ondosocial.domain.user.repository.UserRepository;

@@ -1,4 +1,4 @@
-package com.example.ondosocial.domain.follower.dto;
+package com.example.ondosocial.domain.follow.dto;
 
 import com.example.ondosocial.domain.user.entity.User;
 

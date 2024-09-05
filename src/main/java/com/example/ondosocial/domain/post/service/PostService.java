@@ -1,5 +1,6 @@
 package com.example.ondosocial.domain.post.service;
 
+import com.example.ondosocial.config.error.ErrorCode;
 import com.example.ondosocial.domain.follower.entity.Follower;
 import com.example.ondosocial.domain.follower.repository.FollowerRepository;
 import com.example.ondosocial.domain.post.dto.GetPostsDto;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Transactional
@@ -28,9 +30,9 @@ public class PostService {
     private final FollowerRepository followerRepository;
 
     public void create(Long id, String title, String content, int celsius) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
         if (user.isDeleted()) {
-            throw new IllegalArgumentException("User is deleted");
+            throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());
         }
         Post post = new Post(title, content, celsius, user);
         postRepository.save(post);
@@ -46,9 +48,9 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public Page<GetPostsDto.Response> getPostsByFollowedUser(Long id, int page, int size) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
         if (user.isDeleted()) {
-            throw new IllegalArgumentException("User is deleted");
+            throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());
         }
 
         List<Follower> followers = followerRepository.findAllByUserId(id);
@@ -67,18 +69,18 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public Post getPostById(Long id) {
-        return postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+        return postRepository.findById(id).orElseThrow(() -> new NoSuchElementException(ErrorCode.POST_NOT_FOUND.getMessage()));
     }
 
     public Post update(Long userId, Long postId, String title, String content, int celsius) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
         if (user.isDeleted()) {
-            throw new IllegalArgumentException("User is deleted");
+            throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());
         }
 
-        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new NoSuchElementException(ErrorCode.POST_NOT_FOUND.getMessage()));
         if(user != post.getUser()) {
-            throw new IllegalArgumentException("User is not the same user");
+            throw new IllegalArgumentException(ErrorCode.NO_PERMISSION_TO_POST.getMessage());
         }
 
         post.update(title, content, celsius);
@@ -86,14 +88,14 @@ public class PostService {
     }
 
     public void delete(Long userId, Long postId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
         if (user.isDeleted()) {
-            throw new IllegalArgumentException("User is deleted");
+            throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());
         }
 
-        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new NoSuchElementException(ErrorCode.POST_NOT_FOUND.getMessage()));
         if(user != post.getUser()) {
-            throw new IllegalArgumentException("User is not the same user");
+            throw new IllegalArgumentException(ErrorCode.NO_PERMISSION_TO_POST.getMessage());
         }
 
         postRepository.delete(post);

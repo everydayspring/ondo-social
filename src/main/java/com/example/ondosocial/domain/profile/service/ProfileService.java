@@ -1,6 +1,7 @@
 package com.example.ondosocial.domain.profile.service;
 
 
+import com.example.ondosocial.config.error.ErrorCode;
 import com.example.ondosocial.config.password.PasswordEncoder;
 import com.example.ondosocial.domain.profile.dto.request.ProfileUpdateRequestDto;
 import com.example.ondosocial.domain.profile.dto.response.ProfileResponseDto;
@@ -14,6 +15,7 @@ import com.example.ondosocial.domain.user.entity.User;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
 
 @Service
@@ -26,7 +28,7 @@ public class ProfileService {
 
     public ResponseEntity<ProfileResponseDto> getUser(Long id) {
         User foundUser=userRepository.findById(id)
-                .orElseThrow(()-> new NullPointerException("해당 회원이 없습니다"));
+                .orElseThrow(()-> new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
 
         ProfileResponseDto userProfileDto=new ProfileResponseDto(
                 foundUser.getId(),
@@ -42,16 +44,16 @@ public class ProfileService {
     @Transactional
     public ResponseEntity<ProfileUpdateResponseDto> updateUser(Long id, ProfileUpdateRequestDto userUpdateRequestDto) {
         User user=userRepository.findById(id)
-                .orElseThrow(()-> new NullPointerException("해당 회원이 없습니다"));
+                .orElseThrow(()-> new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
 
         //비밀번호 일치 확인
         if(!passwordEncoder.matches(userUpdateRequestDto.getCurrentPassword(), user.getPassword())){
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다");
+            throw new IllegalArgumentException(ErrorCode.PASSWORD_MISMATCH.getMessage());
         }
         if(userUpdateRequestDto.getNewPassword()!=null){
             conditionalPassword(userUpdateRequestDto.getNewPassword()); //비밀번호 조건 검사
             if(userUpdateRequestDto.getNewPassword().equals(user.getPassword())){
-                throw new IllegalArgumentException("동일한 비밀번호로 변경할 수 없습니다");
+                throw new IllegalArgumentException(ErrorCode.SAME_PASSWORD_NOT_ALLOWED.getMessage());
             }
         }
 
@@ -72,7 +74,7 @@ public class ProfileService {
         String passwordPattern = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&])[A-Za-z0-9$@$!%*#?&]{8,}$";
         Pattern pattern = Pattern.compile(passwordPattern);
         if(!pattern.matcher(password).matches()){
-            throw new IllegalArgumentException("대소문자, 숫자, 특수문자를 포함한 8자 이상의 비밀번호를 설정해 주세요. ");
+            throw new IllegalArgumentException(ErrorCode.INVALID_PASSWORD_FORMAT.getMessage());
         }
     }
 }

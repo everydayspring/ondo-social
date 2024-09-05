@@ -1,5 +1,6 @@
 package com.example.ondosocial.domain.follower.service;
 
+import com.example.ondosocial.config.error.ErrorCode;
 import com.example.ondosocial.domain.follower.entity.Follower;
 import com.example.ondosocial.domain.follower.repository.FollowerRepository;
 import com.example.ondosocial.domain.user.entity.User;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @Service
@@ -21,21 +23,21 @@ public class FollowerService {
 
     public void create(Long id, Long followerId) {
         if(Objects.equals(id, followerId)) {
-            throw new IllegalArgumentException("Users cannot follow themselves");
+            throw new IllegalArgumentException(ErrorCode.FOLLOW_SELF_NOT_ALLOWED.getMessage());
         }
 
-        User user = userRepository.findById(id).orElseThrow(()-> new RuntimeException("User not found"));
+        User user = userRepository.findById(id).orElseThrow(()-> new NoSuchElementException(ErrorCode.POST_NOT_FOUND.getMessage()));
         if(user.isDeleted()) {
-            throw new IllegalArgumentException("User is deleted");
+            throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());
         }
 
-        User follower = userRepository.findById(followerId).orElseThrow(()-> new RuntimeException("User not found"));
+        User follower = userRepository.findById(followerId).orElseThrow(()-> new NoSuchElementException(ErrorCode.POST_NOT_FOUND.getMessage()));
         if(follower.isDeleted()) {
-            throw new IllegalArgumentException("User is deleted");
+            throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());
         }
 
         if(followerRepository.findOneByUserAndFollower(user, follower) != null) {
-            throw new RuntimeException("Follower already exists");
+            throw new IllegalArgumentException(ErrorCode.FOLLOWER_ALREADY_EXISTS.getMessage());
         }
 
         followerRepository.save(new Follower(user, follower));
@@ -43,14 +45,14 @@ public class FollowerService {
 
     @Transactional(readOnly = true)
     public List<Follower> getFollowers(Long id) {
-        User user = userRepository.findById(id).orElseThrow(()-> new RuntimeException("User not found"));
+        User user = userRepository.findById(id).orElseThrow(()-> new NoSuchElementException(ErrorCode.POST_NOT_FOUND.getMessage()));
 
         return followerRepository.findAllByUser(user);
     }
 
     public void delete(Long id, Long followerId) {
-        User user = userRepository.findById(id).orElseThrow(()-> new RuntimeException("User not found"));
-        User followerUser = userRepository.findById(followerId).orElseThrow(()-> new RuntimeException("User not found"));
+        User user = userRepository.findById(id).orElseThrow(()-> new NoSuchElementException(ErrorCode.POST_NOT_FOUND.getMessage()));
+        User followerUser = userRepository.findById(followerId).orElseThrow(()-> new NoSuchElementException(ErrorCode.POST_NOT_FOUND.getMessage()));
 
         Follower follower = followerRepository.findOneByUserAndFollower(user, followerUser);
         followerRepository.delete(follower);

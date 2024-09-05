@@ -1,6 +1,7 @@
 package com.example.ondosocial.domain.user.service;
 
 import com.example.ondosocial.config.auth.JwtUtil;
+import com.example.ondosocial.config.error.ErrorCode;
 import com.example.ondosocial.config.password.PasswordEncoder;
 import com.example.ondosocial.domain.user.entity.User;
 import com.example.ondosocial.domain.user.repository.UserRepository;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
 
 @Service
@@ -22,10 +24,10 @@ public class UserService {
 
         User checkUser = userRepository.findByEmail(email);
         if (checkUser != null && checkUser.isDeleted()) {
-            throw new IllegalArgumentException("탈퇴한 사용자");
+            throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());
         }
         if (checkUser != null) {
-            throw new IllegalArgumentException("이미 가입한 사용자");
+            throw new IllegalArgumentException(ErrorCode.ALREADY_SIGNED_UP_USER.getMessage());
         }
 
         conditionalPassword(password);
@@ -41,13 +43,13 @@ public class UserService {
 
         User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new IllegalArgumentException("사용자 없음");
+            throw new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage());
         } else if (user.isDeleted()) {
-            throw new IllegalArgumentException("탈퇴한 사용자");
+            throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());
         }
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new IllegalArgumentException(ErrorCode.PASSWORD_MISMATCH.getMessage());
         }
 
         return jwtUtil.createToken(user.getId(), user.getEmail());
@@ -55,14 +57,14 @@ public class UserService {
 
     public void delete(Long id, String password) {
         User user = userRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("존재하지 않는 ID 입니다."));
+                new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
 
         if (user.isDeleted()) {
-            throw new IllegalArgumentException("이미 탈퇴한 사용자 ID 입니다.");
+            throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());
         }
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new IllegalArgumentException(ErrorCode.PASSWORD_MISMATCH.getMessage());
         }
 
         user.delete();
@@ -73,7 +75,7 @@ public class UserService {
         String passwordPattern = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&])[A-Za-z0-9$@$!%*#?&]{8,}$";
         Pattern pattern = Pattern.compile(passwordPattern);
         if (!pattern.matcher(password).matches()) {
-            throw new IllegalArgumentException("대소문자, 숫자, 특수문자를 포함한 8자 이상의 비밀번호를 설정해 주세요. ");
+            throw new IllegalArgumentException(ErrorCode.INVALID_PASSWORD_FORMAT.getMessage());
         }
     }
 

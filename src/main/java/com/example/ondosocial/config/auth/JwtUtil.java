@@ -1,5 +1,6 @@
 package com.example.ondosocial.config.auth;
 
+import com.example.ondosocial.config.error.AuthErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -49,8 +50,8 @@ public class JwtUtil {
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             return tokenValue.substring(7);
         }
-        log.error("Not Found Token");
-        throw new NullPointerException("Not Found Token");
+        log.error(AuthErrorCode.NOT_FOUND_TOKEN.getMessage());
+        throw new NullPointerException(AuthErrorCode.NOT_FOUND_TOKEN.getMessage());
     }
 
     public Claims extractClaims(String token) {

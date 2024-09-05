@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -79,7 +80,7 @@ public class PostService {
         }
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new NoSuchElementException(ErrorCode.POST_NOT_FOUND.getMessage()));
-        if(user != post.getUser()) {
+        if(!Objects.equals(user, post.getUser())) {
             throw new IllegalArgumentException(ErrorCode.NO_PERMISSION_TO_POST.getMessage());
         }
 
@@ -94,7 +95,7 @@ public class PostService {
         }
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new NoSuchElementException(ErrorCode.POST_NOT_FOUND.getMessage()));
-        if(user != post.getUser()) {
+        if(!Objects.equals(user, post.getUser())) {
             throw new IllegalArgumentException(ErrorCode.NO_PERMISSION_TO_POST.getMessage());
         }
 

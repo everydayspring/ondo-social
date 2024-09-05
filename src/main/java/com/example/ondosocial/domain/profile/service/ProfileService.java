@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Service
@@ -27,10 +28,10 @@ public class ProfileService {
     private final PasswordEncoder passwordEncoder;
 
     public ResponseEntity<ProfileResponseDto> getUser(Long id) {
-        User foundUser=userRepository.findById(id)
-                .orElseThrow(()-> new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
+        User foundUser = userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
 
-        ProfileResponseDto userProfileDto=new ProfileResponseDto(
+        ProfileResponseDto userProfileDto = new ProfileResponseDto(
                 foundUser.getId(),
                 foundUser.getName(),
                 foundUser.getEmail(),
@@ -43,23 +44,23 @@ public class ProfileService {
 
     @Transactional
     public ResponseEntity<ProfileUpdateResponseDto> updateUser(Long id, ProfileUpdateRequestDto userUpdateRequestDto) {
-        User user=userRepository.findById(id)
-                .orElseThrow(()-> new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage()));
 
         //비밀번호 일치 확인
-        if(!passwordEncoder.matches(userUpdateRequestDto.getCurrentPassword(), user.getPassword())){
+        if (!passwordEncoder.matches(userUpdateRequestDto.getCurrentPassword(), user.getPassword())) {
             throw new IllegalArgumentException(ErrorCode.PASSWORD_MISMATCH.getMessage());
         }
-        if(userUpdateRequestDto.getNewPassword()!=null){
+        if (Objects.nonNull(userUpdateRequestDto.getNewPassword())) {
             conditionalPassword(userUpdateRequestDto.getNewPassword()); //비밀번호 조건 검사
-            if(userUpdateRequestDto.getNewPassword().equals(user.getPassword())){
+            if (userUpdateRequestDto.getNewPassword().equals(user.getPassword())) {
                 throw new IllegalArgumentException(ErrorCode.SAME_PASSWORD_NOT_ALLOWED.getMessage());
             }
         }
 
-        user.update(userUpdateRequestDto,passwordEncoder);
+        user.update(userUpdateRequestDto, passwordEncoder);
 
-        ProfileUpdateResponseDto userUpdateDto=new ProfileUpdateResponseDto(
+        ProfileUpdateResponseDto userUpdateDto = new ProfileUpdateResponseDto(
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
@@ -69,11 +70,12 @@ public class ProfileService {
 
         return ResponseEntity.status(HttpStatus.OK).body(userUpdateDto);
     }
+
     //user의 Service와 공통부분
-    public void conditionalPassword(String password){
+    public void conditionalPassword(String password) {
         String passwordPattern = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&])[A-Za-z0-9$@$!%*#?&]{8,}$";
         Pattern pattern = Pattern.compile(passwordPattern);
-        if(!pattern.matcher(password).matches()){
+        if (!pattern.matcher(password).matches()) {
             throw new IllegalArgumentException(ErrorCode.INVALID_PASSWORD_FORMAT.getMessage());
         }
     }

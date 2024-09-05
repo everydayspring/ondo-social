@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Service
@@ -23,10 +24,10 @@ public class UserService {
     public String signup(String email, String password, String name) {
 
         User checkUser = userRepository.findByEmail(email);
-        if (checkUser != null && checkUser.isDeleted()) {
+        if (Objects.nonNull(checkUser)  && checkUser.isDeleted()) {
             throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());
         }
-        if (checkUser != null) {
+        if (Objects.nonNull(checkUser)) {
             throw new IllegalArgumentException(ErrorCode.ALREADY_SIGNED_UP_USER.getMessage());
         }
 
@@ -42,7 +43,7 @@ public class UserService {
     public String signin(String email, String password) {
 
         User user = userRepository.findByEmail(email);
-        if (user == null) {
+        if (Objects.isNull(user)) {
             throw new NoSuchElementException(ErrorCode.USER_NOT_FOUND.getMessage());
         } else if (user.isDeleted()) {
             throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());

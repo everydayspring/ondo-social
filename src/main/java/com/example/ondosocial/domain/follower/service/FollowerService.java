@@ -36,7 +36,7 @@ public class FollowerService {
             throw new IllegalArgumentException(ErrorCode.DELETED_USER.getMessage());
         }
 
-        if(followerRepository.findOneByUserAndFollower(user, follower) != null) {
+        if(Objects.nonNull(followerRepository.findOneByUserAndFollower(user, follower))) {
             throw new IllegalArgumentException(ErrorCode.FOLLOWER_ALREADY_EXISTS.getMessage());
         }
 

@@ -8,7 +8,7 @@ On기능을 사용해 친구를 팔로우 할 수 있습니다.
 
 # 🌡️ Team 25℃
 #### [🌸 everydayspring](https://github.com/everydayspring)
-#### [🍊 **jiyumi00**](https://github.com/jiyumi00)
+#### [🍊 jiyumi00 (Leader)](https://github.com/jiyumi00)
 #### [👤 kanz-in-code](https://github.com/kanz-in-code)
 #### [🌡️k_chong](https://github.com/eunchongkang)
 

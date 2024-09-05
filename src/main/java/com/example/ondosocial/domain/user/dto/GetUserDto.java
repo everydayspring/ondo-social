@@ -8,13 +8,13 @@ import java.time.LocalDateTime;
 public class GetUserDto {
     @Getter
     public static class DetailResponse {
-        private Long id;
-        private String name;
-        private String email;
-        private Integer postCount;
-        private Integer followerCount;
-        private LocalDateTime createdAt;
-        private LocalDateTime updatedAt;
+        private final Long id;
+        private final String name;
+        private final String email;
+        private final Integer postCount;
+        private final Integer followerCount;
+        private final LocalDateTime createdAt;
+        private final LocalDateTime updatedAt;
 
         public DetailResponse(User user) {
             this.id = user.getId();
@@ -29,11 +29,11 @@ public class GetUserDto {
 
     @Getter
     public static class SimpleResponse {
-        private Long id;
-        private String name;
-        private String email;
-        private Integer postCount;
-        private Integer followerCount;
+        private final Long id;
+        private final String name;
+        private final String email;
+        private final Integer postCount;
+        private final Integer followerCount;
 
         public SimpleResponse(User user) {
             this.id = user.getId();
